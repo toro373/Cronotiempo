@@ -360,8 +360,8 @@ function isValidMap(map) {
 
 function resizeMapToWorld(map) {
   if (!isValidMap(map)) throw new Error("El mapa no tiene un formato válido.");
-  const sourceMaxX = Math.max(1, map[0].length - 1);
-  const sourceMaxY = Math.max(1, map.length - 1);
+  const sourceMaxX = map[0].length - 1;
+  const sourceMaxY = map.length - 1;
   return Array.from({ length: HEIGHT }, (_, y) =>
     Array.from({ length: WIDTH }, (_, x) => {
       const sourceY = Math.round((y / (HEIGHT - 1)) * sourceMaxY);
@@ -386,6 +386,8 @@ function openMapEditor(container) {
     <div class="editor-toolbar"><label class="form-field"><span>Terreno para pintar</span><select id="editor-terrain">${Object.entries(TERRAIN).map(([id, terrain]) =>
       `<option value="${id}">${escapeHtml(terrain.name)}</option>`).join("")}</select></label>
       <div class="editor-actions"><button id="save-map" class="secondary-button" type="button">Guardar mapa</button>
+      <button id="import-map" class="secondary-button" type="button">Importar mapa</button>
+      <input id="import-map-file" type="file" accept=".json,application/json" hidden>
       <button id="play-edited-map" class="primary-button" type="button">Jugar en este mapa →</button></div></div>
     <div class="editor-map-wrap"><div id="editor-map" class="game-map editor-map" role="grid" aria-label="Editor de mapa"></div></div>
     ${renderSaveDirectoryControls("map-editor")}`;
@@ -400,6 +402,28 @@ function openMapEditor(container) {
     if (!writeStorage(STORAGE_KEYS.map, editorTiles)) return;
     persistMapFile(editorTiles);
     showMessage("Mapa guardado. Se sincronizará con la carpeta saves si está conectada.");
+  });
+  const mapFileInput = container.querySelector("#import-map-file");
+  container.querySelector("#import-map").addEventListener("click", () => mapFileInput.click());
+  mapFileInput.addEventListener("change", async () => {
+    const [file] = mapFileInput.files;
+    if (!file) return;
+    try {
+      const imported = JSON.parse(await file.text());
+      const tiles = Array.isArray(imported) ? imported : imported.tiles;
+      if (!isValidMap(tiles)) throw new Error("El archivo no contiene un mapa válido.");
+      const resizedTiles = resizeMapToWorld(tiles);
+      if (!writeStorage(STORAGE_KEYS.map, resizedTiles)) return;
+      editorTiles = resizedTiles;
+      persistMapFile(editorTiles);
+      renderEditorMap(map);
+      showMessage("Mapa importado y guardado en este navegador.");
+    } catch (error) {
+      console.error("No se pudo importar el mapa.", error);
+      showMessage(`No se pudo importar el mapa: ${error.message}`);
+    } finally {
+      mapFileInput.value = "";
+    }
   });
   container.querySelector("#play-edited-map").addEventListener("click", () => {
     if (!writeStorage(STORAGE_KEYS.map, editorTiles)) return;
@@ -434,6 +458,8 @@ function renderSavedGames(container) {
     ${renderSaveDirectoryControls("load-games")}
     <div class="save-archive-actions">
       <p class="storage-note">Descarga una copia para conservarla o trasladarla a otro navegador.</p>
+      <button id="import-saves" class="secondary-button" type="button">Importar partidas</button>
+      <input id="import-saves-files" type="file" accept=".json,application/json" multiple hidden>
       <button id="export-all-saves" class="secondary-button" type="button" ${saves.length ? "" : "disabled"}>Exportar todos los guardados</button>
     </div>
     <div class="saved-games">${saves.length ? saves.map((save) => `
@@ -443,6 +469,43 @@ function renderSavedGames(container) {
       <button class="secondary-button" data-export-save="${escapeHtml(save.saveId)}" type="button">Exportar</button>
       <button class="secondary-button delete-save-button" data-delete-save="${escapeHtml(save.saveId)}" type="button">Borrar</button></div></article>`).join("") :
       `<p class="empty-message">Todavía no hay partidas guardadas. Inicia una nueva crónica para comenzar.</p>`}</div>`;
+  const saveFilesInput = container.querySelector("#import-saves-files");
+  container.querySelector("#import-saves").addEventListener("click", () => saveFilesInput.click());
+  saveFilesInput.addEventListener("change", async () => {
+    const files = [...saveFilesInput.files];
+    if (!files.length) return;
+    try {
+      const imports = [];
+      for (const file of files) imports.push(JSON.parse(await file.text()));
+      const importedSaves = imports.flatMap((data) => {
+        if (data?.format === "cronotempo-saves" && data.version === 1 && Array.isArray(data.saves)) {
+          return data.saves;
+        }
+        return [data];
+      });
+      if (!importedSaves.length || importedSaves.some((save) => !isValidSave(save))) {
+        throw new Error("El archivo no contiene una partida válida o un archivo de guardados compatible.");
+      }
+      const mergedSaves = readStorage(STORAGE_KEYS.games, []);
+      for (const save of importedSaves) {
+        const existingIndex = mergedSaves.findIndex((entry) => entry.saveId === save.saveId);
+        if (existingIndex >= 0) mergedSaves.splice(existingIndex, 1);
+        mergedSaves.push(save);
+      }
+      mergedSaves.sort((first, second) =>
+        String(second.savedAt ?? "").localeCompare(String(first.savedAt ?? ""))
+      );
+      if (!writeStorage(STORAGE_KEYS.games, mergedSaves.slice(0, 10))) return;
+      for (const save of importedSaves) persistSaveFile(save);
+      renderSavedGames(container);
+      showMessage(`${importedSaves.length} partida${importedSaves.length === 1 ? "" : "s"} importada${importedSaves.length === 1 ? "" : "s"}.`);
+    } catch (error) {
+      console.error("No se pudieron importar las partidas.", error);
+      showMessage(`No se pudieron importar las partidas: ${error.message}`);
+    } finally {
+      saveFilesInput.value = "";
+    }
+  });
   container.querySelector("#export-all-saves").addEventListener("click", () => {
     downloadSavedGames(saves);
   });
@@ -484,6 +547,15 @@ function renderSavedGames(container) {
       }
     });
   });
+}
+
+function isValidSave(save) {
+  return Boolean(save && typeof save.saveId === "string" && save.saveId &&
+    save.civilization && typeof save.civilization.id === "string" &&
+    Array.isArray(save.tiles) && save.tiles.length > 0 &&
+    save.tiles.every((row) => Array.isArray(row) && row.length === save.tiles[0].length &&
+      row.length > 0 && row.every((tile) => tile && TERRAIN[tile.type])) &&
+    Array.isArray(save.units) && Array.isArray(save.cities));
 }
 
 function downloadSavedGame(save) {
@@ -744,7 +816,9 @@ function renderCivilizationForm(container) {
   const genericUnitOptions = unitOptions.filter((unit) => unit.faction === "generic");
   container.innerHTML = `
     <div class="workspace-heading"><span class="eyebrow">CREADOR DE CIVILIZACIONES</span><h1>Imagina un nuevo pueblo</h1>
-    <p>Define su identidad, capital, unidades iniciales y ventajas. La civilización quedará disponible para tus próximas partidas.</p></div>
+    <p>Define su identidad, capital, unidades iniciales y ventajas. La civilización quedará disponible para tus próximas partidas.</p>
+    <button id="import-civilization" class="secondary-button" type="button">Importar civilización XML</button>
+    <input id="import-civilization-file" type="file" accept=".xml,application/xml,text/xml" hidden></div>
     <div class="civilization-creator-layout">
     <form id="civilization-form" class="civilization-form">
       <fieldset class="civilization-editor-section"><legend>Identidad</legend>
@@ -819,6 +893,28 @@ function renderCivilizationForm(container) {
     </div>
     <div id="civilization-result" aria-live="polite"></div>
     <p class="storage-note">Se guardará en este navegador. También podrás descargar la definición completa como XML.</p>`;
+  const civilizationFileInput = container.querySelector("#import-civilization-file");
+  container.querySelector("#import-civilization").addEventListener("click", () => civilizationFileInput.click());
+  civilizationFileInput.addEventListener("change", async () => {
+    const [file] = civilizationFileInput.files;
+    if (!file) return;
+    try {
+      const civilization = parseCivilizationXml(await file.text());
+      const customCivilizations = readStorage(STORAGE_KEYS.civilizations, []);
+      const builtIn = game.civilizations.some((entry) => entry.id === civilization.id);
+      if (builtIn) throw new Error("El archivo usa el identificador de una civilización incluida en el juego.");
+      const existingIndex = customCivilizations.findIndex((entry) => entry.id === civilization.id);
+      if (existingIndex >= 0) customCivilizations.splice(existingIndex, 1);
+      customCivilizations.push(civilization);
+      if (!writeStorage(STORAGE_KEYS.civilizations, customCivilizations)) return;
+      showMessage(`${civilization.name} importada. Ya está disponible al empezar una partida.`);
+    } catch (error) {
+      console.error("No se pudo importar la civilización.", error);
+      showMessage(`No se pudo importar la civilización: ${error.message}`);
+    } finally {
+      civilizationFileInput.value = "";
+    }
+  });
   const form = container.querySelector("#civilization-form");
   const updatePointStatus = () => {
     const costs = getCivilizationCreationPointCosts(form);
@@ -1036,4 +1132,50 @@ ${availableUnits}
   link.download = `${civilization.id}.xml`;
   link.click();
   setTimeout(() => URL.revokeObjectURL(link.href), 0);
+}
+
+function parseCivilizationXml(xml) {
+  const documentXml = new DOMParser().parseFromString(xml, "application/xml");
+  if (documentXml.querySelector("parsererror")) throw new Error("El archivo XML está dañado.");
+  const definitions = documentXml.querySelectorAll("gameData > civilizations > civilization");
+  if (definitions.length !== 1) throw new Error("El XML debe contener una sola definición de civilización.");
+  const node = definitions[0];
+  const abilitiesNode = node.querySelector("abilities");
+  const readMultiplier = (name) => Number(abilitiesNode?.getAttribute(name));
+  const civilization = {
+    id: node.getAttribute("id"),
+    name: node.getAttribute("name"),
+    adjective: node.getAttribute("adjective"),
+    color: node.getAttribute("color"),
+    aggression: Number(node.getAttribute("aggression")),
+    playable: node.getAttribute("playable") === "true",
+    independent: false,
+    canFoundSettlers: node.getAttribute("canFoundSettlers") === "true",
+    description: node.querySelector("description")?.textContent.trim() ?? "",
+    capital: node.getAttribute("capital"),
+    cities: [...node.querySelectorAll("cities > city")].map((city) => city.textContent.trim()),
+    startingUnits: [...node.querySelectorAll("startingUnits > unit")].map((unit) => unit.getAttribute("type")),
+    availableUnits: [...node.querySelectorAll("availableUnits > unit")].map((unit) => unit.getAttribute("type")),
+    abilities: {
+      unitProductionMultiplier: readMultiplier("unitProductionMultiplier"),
+      unitPurchaseMultiplier: readMultiplier("unitPurchaseMultiplier"),
+      unitStrengthMultiplier: readMultiplier("unitStrengthMultiplier"),
+      progressionCostMultiplier: readMultiplier("progressionCostMultiplier"),
+      descriptions: [...(abilitiesNode?.querySelectorAll("ability") ?? [])]
+        .map((ability) => ability.textContent.trim()).filter(Boolean)
+    }
+  };
+  const multipliers = Object.values(civilization.abilities).filter((value) => typeof value === "number");
+  const allUnits = [...civilization.startingUnits, ...civilization.availableUnits];
+  if (!civilization.id || !civilization.name || !civilization.adjective ||
+      !/^#[0-9a-f]{6}$/i.test(civilization.color) || !civilization.capital ||
+      !Number.isFinite(civilization.aggression) || civilization.aggression < 0 || civilization.aggression > 100 ||
+      !civilization.playable || !civilization.startingUnits.length ||
+      allUnits.some((id) => !id || !game.unitTypes.has(id)) ||
+      !civilization.startingUnits.some((id) => game.unitTypes.get(id)?.canFound) ||
+      multipliers.some((value) => !Number.isFinite(value) || value < 0.25 || value > 3)) {
+    throw new Error("El XML no contiene una civilización jugable con unidades y rasgos válidos.");
+  }
+  if (!civilization.cities.includes(civilization.capital)) civilization.cities.unshift(civilization.capital);
+  return civilization;
 }

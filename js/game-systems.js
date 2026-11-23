@@ -1,6 +1,29 @@
 let pendingWarOrder = null;
 let currentProgressionKind = "science";
 let progressionBranchesVisible = false;
+let backgroundMusic = null;
+let backgroundMusicEnabled = false;
+let backgroundMusicTrackIndex = 0;
+let masterAudioVolume = 0.3;
+let audioMuted = false;
+let unitAudioContext = null;
+let unitAudioMasterGain = null;
+let audioContextUnsupportedReported = false;
+const BACKGROUND_MUSIC_TRACKS = [
+  "assets/music/Port Town (Loop).ogg",
+  "assets/music/Royal Town (Loop).ogg",
+  "assets/music/Whimsical Town (Loop).ogg",
+  "assets/music/Shady Town (Loop).ogg",
+  "assets/music/Mystical Town (Loop).ogg",
+  "assets/music/Mining Town (Loop).ogg",
+  "assets/music/Mechanical Town (Loop).ogg",
+  "assets/music/Desert Town (Loop).ogg",
+  "assets/music/Pleasant Adventure.ogg",
+  "assets/music/In the Before Times.ogg",
+  "assets/music/The Sand Level.ogg",
+  "assets/music/Hordes and Hordes.ogg",
+  "assets/music/Madness All Around Me.ogg"
+];
 
 function renderStats() {
   const cities = getPlayerCities();
@@ -970,6 +993,109 @@ function showMessage(message) {
   game.messageTimer = setTimeout(() => toast.classList.remove("visible"), 2600);
 }
 
+function initializeGameAudio() {
+  const volumeControl = document.querySelector("#audio-volume");
+  const volumeOutput = document.querySelector("#audio-volume-value");
+  const muteButton = document.querySelector("#audio-mute");
+  backgroundMusic = new Audio(BACKGROUND_MUSIC_TRACKS[backgroundMusicTrackIndex]);
+  backgroundMusic.loop = false;
+  backgroundMusic.volume = masterAudioVolume;
+  backgroundMusic.preload = "none";
+
+  const updateAudioControls = () => {
+    volumeOutput.textContent = `${Math.round(masterAudioVolume * 100)} %`;
+    muteButton.textContent = audioMuted ? "Activar sonido" : "Silenciar";
+    muteButton.setAttribute("aria-pressed", String(audioMuted));
+  };
+  const syncAudioLevels = () => {
+    backgroundMusic.volume = audioMuted ? 0 : masterAudioVolume;
+    if (unitAudioMasterGain && unitAudioContext) {
+      unitAudioMasterGain.gain.setTargetAtTime(
+        audioMuted ? 0 : masterAudioVolume,
+        unitAudioContext.currentTime,
+        0.02
+      );
+    }
+  };
+  const playMusic = () => {
+    if (!backgroundMusicEnabled || audioMuted) return;
+    backgroundMusic.play().catch((error) => {
+      if (error.name === "AbortError") return;
+      console.error("No se pudo reproducir la música.", error);
+      showMessage(`No se pudo reproducir la música: ${error.message}`);
+    });
+  };
+  const enableAudioOnFirstInteraction = () => {
+    backgroundMusicEnabled = true;
+    getUnitAudioContext();
+    playMusic();
+  };
+
+  backgroundMusic.addEventListener("ended", () => {
+    backgroundMusicTrackIndex = (backgroundMusicTrackIndex + 1) % BACKGROUND_MUSIC_TRACKS.length;
+    backgroundMusic.src = BACKGROUND_MUSIC_TRACKS[backgroundMusicTrackIndex];
+    backgroundMusic.load();
+    playMusic();
+  });
+  volumeControl.addEventListener("input", () => {
+    masterAudioVolume = Number(volumeControl.value) / 100;
+    syncAudioLevels();
+    updateAudioControls();
+  });
+  muteButton.addEventListener("click", () => {
+    audioMuted = !audioMuted;
+    getUnitAudioContext();
+    syncAudioLevels();
+    updateAudioControls();
+    if (audioMuted) backgroundMusic.pause();
+    else playMusic();
+  });
+  document.addEventListener("pointerdown", enableAudioOnFirstInteraction, { once: true });
+  updateAudioControls();
+}
+
+function getUnitAudioContext() {
+  const AudioContextConstructor = window.AudioContext ?? window.webkitAudioContext;
+  if (!AudioContextConstructor) return null;
+  if (!unitAudioContext) {
+    unitAudioContext = new AudioContextConstructor();
+    unitAudioMasterGain = unitAudioContext.createGain();
+    unitAudioMasterGain.gain.value = audioMuted ? 0 : masterAudioVolume;
+    unitAudioMasterGain.connect(unitAudioContext.destination);
+  }
+  if (unitAudioContext.state === "suspended") {
+    unitAudioContext.resume().catch((error) => {
+      console.error("No se pudo activar el audio del juego.", error);
+    });
+  }
+  return unitAudioContext;
+}
+
+function playUnitCreatedSound() {
+  if (audioMuted || masterAudioVolume === 0) return;
+  const context = getUnitAudioContext();
+  if (!context) {
+    if (!audioContextUnsupportedReported) {
+      console.error("Este navegador no admite el sonido de creación de unidades.");
+      audioContextUnsupportedReported = true;
+    }
+    return;
+  }
+  const start = context.currentTime;
+  const oscillator = context.createOscillator();
+  const volume = context.createGain();
+  oscillator.type = "sine";
+  oscillator.frequency.setValueAtTime(660, start);
+  oscillator.frequency.setValueAtTime(990, start + 0.1);
+  volume.gain.setValueAtTime(0.0001, start);
+  volume.gain.exponentialRampToValueAtTime(0.15, start + 0.02);
+  volume.gain.exponentialRampToValueAtTime(0.0001, start + 0.28);
+  oscillator.connect(volume);
+  volume.connect(unitAudioMasterGain);
+  oscillator.start(start);
+  oscillator.stop(start + 0.28);
+}
+
 function showLoadError(error) {
   console.error(error);
   document.querySelector("main").innerHTML = `
@@ -1057,4 +1183,5 @@ document.querySelectorAll("[data-menu]").forEach((button) => {
   button.addEventListener("click", () => openMenuScreen(button.dataset.menu));
 });
 
+initializeGameAudio();
 loadGameData().catch(showLoadError);

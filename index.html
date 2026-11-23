@@ -263,6 +263,14 @@
     <span class="eyebrow">TURNO EN CURSO</span>
     <strong id="turn-transition-name"></strong>
   </div>
+  <details class="audio-controls">
+    <summary>♫ Opciones de audio</summary>
+    <div class="audio-options-panel">
+      <label for="audio-volume">Volumen general <output id="audio-volume-value" for="audio-volume">30 %</output></label>
+      <input id="audio-volume" type="range" min="0" max="100" step="1" value="30" aria-label="Volumen general">
+      <button id="audio-mute" class="secondary-button" type="button" aria-pressed="false">Silenciar</button>
+    </div>
+  </details>
   <div id="game-message" class="toast" role="status" aria-live="polite"></div>
 </body>
 </html>

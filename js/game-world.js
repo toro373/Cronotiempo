@@ -597,6 +597,7 @@ function spawnUnit(typeId, x, y, ownerId = null) {
     health: maxHealth
   };
   game.units.push(unit);
+  if (ownerId === game.civilization?.id) playUnitCreatedSound();
   return unit;
 }
 
@@ -879,7 +880,7 @@ function renderTileContents(tile) {
   const building = tile.structure &&
     game.buildings.find((item) => item.id === tile.structure.buildingId);
   return `<div class="tile-content-details">
-    <p class="terrain-description"><strong>Casilla: ${escapeHtml(terrain.name)}</strong> · ${terrain.passable ? "Transitable" : "Infranqueable"} · ✿ ${terrain.food} alimentos · ⚒ ${terrain.production} producción.</p>
+    <p class="terrain-description"><strong>Casilla: ${escapeHtml(terrain.name)}</strong> · ${tile.type === "water" ? game.researched.includes("navigation") ? "Navegable · 2 puntos de movimiento" : "Infranqueable hasta descubrir Navegación" : terrain.passable ? "Transitable" : "Infranqueable"} · ✿ ${terrain.food} alimentos · ⚒ ${terrain.production} producción.</p>
     ${improvement ? `<p class="terrain-description">Mejora: ${escapeHtml(improvement.name)} · produce ${improvement.amount} ${escapeHtml(getMaterialName(improvement.resource))} por turno.</p>` : ""}
     ${tile.improvement && !improvement ? `<p class="terrain-description">Mejora: ${escapeHtml(tile.improvement.id)}.</p>` : ""}
     ${building ? `<p class="terrain-description">Construcción: ${escapeHtml(building.name)} · forma ${escapeHtml(game.unitTypes.get(building.unitId)?.name ?? "una unidad")} cada ${building.unitInterval} turnos.</p>` : ""}
@@ -1010,7 +1011,10 @@ function findPath(unit, targetX, targetY, maxCost) {
 }
 
 function canUnitEnterTerrain(unit, terrainType) {
-  return TERRAIN[terrainType].passable || (terrainType === "water" && game.unitTypes.get(unit.typeId)?.canSail);
+  if (terrainType === "water") {
+    return game.unitTypes.get(unit.typeId)?.canSail === true || game.researched.includes("navigation");
+  }
+  return TERRAIN[terrainType].passable;
 }
 
 function getUnitTerrainCost(unit, terrainType) {
@@ -1042,7 +1046,7 @@ function renderSelection() {
           <span class="unit-health-fill ${unit.health / unit.maxHealth <= .3 ? "health-critical" : unit.health / unit.maxHealth <= .65 ? "health-wounded" : ""}" style="width:${Math.max(0, Math.min(100, (unit.health / unit.maxHealth) * 100))}%"></span>
         </span>
       </div>
-      <div class="unit-meta"><span>⚑ Fuerza ${getUnitStrength(type, getUnitFaction(unit))}</span><span>❤ ${unit.health}/${unit.maxHealth}</span><span>↗ Movimiento ${unit.movesLeft}/${type.movement}</span>${type.range > 1 ? `<span>◎ Alcance ${type.range}</span>` : ""}${type.canSail ? "<span>⛵ Navega por el mar</span>" : ""}</div>
+      <div class="unit-meta"><span>⚑ Fuerza ${getUnitStrength(type, getUnitFaction(unit))}</span><span>❤ ${unit.health}/${unit.maxHealth}</span><span>↗ Movimiento ${unit.movesLeft}/${type.movement}</span>${type.range > 1 ? `<span>◎ Alcance ${type.range}</span>` : ""}${type.canSail || game.researched.includes("navigation") ? "<span>⛵ Navega · 2 movimientos/casilla</span>" : "<span>⚓ Investiga Navegación para cruzar el mar</span>"}</div>
       ${type.canBuild ? `<p class="unit-stance-status">Construcciones restantes: ${unit.buildCharges}/3</p>` : ""}
       ${type.canTrade ? renderMerchantRouteSummary(unit) : ""}
       ${getUnitStrength(type, getUnitFaction(unit)) > 0

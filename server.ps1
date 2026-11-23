@@ -12,6 +12,7 @@ $contentTypes = @{
   ".js" = "text/javascript; charset=utf-8"
   ".json" = "application/json; charset=utf-8"
   ".svg" = "image/svg+xml"
+  ".ogg" = "audio/ogg"
   ".xml" = "application/xml; charset=utf-8"
 }
 $listener = [System.Net.HttpListener]::new()
