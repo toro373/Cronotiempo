@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111a1d">
+  <title>Cronotempo: La guerra de los 1500 años</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="js/game.js" defer></script>
+  <script src="js/game-menu.js" defer></script>
+  <script src="js/game-state.js" defer></script>
+  <script src="js/game-world.js" defer></script>
+  <script src="js/game-economy.js" defer></script>
+  <script src="js/game-systems.js" defer></script>
+</head>
+<body>
+  <div class="game-shell">
+    <main id="main-menu" class="main-menu">
+      <header class="menu-header">
+        <a class="brand" href="#" aria-label="Cronotempo: La guerra de los 1500 años">
+          <img class="brand-mark" src="assets/cronotempo-symbol.svg" alt="">
+          <span><strong>CRONOTEMPO</strong><small>LA GUERRA DE LOS 1500 AÑOS</small></span>
+        </a>
+        <span class="menu-version">ESTRATEGIA · UN JUGADOR</span>
+      </header>
+      <section id="menu-home" class="menu-home">
+        <div class="menu-hero">
+          <span class="eyebrow">TU HISTORIA COMIENZA AQUÍ</span>
+          <h1>Forja un mundo.<br><em>Escribe su historia.</em></h1>
+          <p>Guía a tu civilización desde sus primeros pasos y decide qué dejará atrás el paso del tiempo.</p>
+        </div>
+        <div class="menu-options" aria-label="Opciones principales">
+          <button class="menu-option menu-option-primary" data-menu="new-game" type="button">
+            <span class="menu-option-icon" aria-hidden="true">▶</span>
+            <span><strong>Empezar a jugar</strong><small>Inicia una nueva partida</small></span>
+            <span class="menu-arrow" aria-hidden="true">→</span>
+          </button>
+          <button class="menu-option" data-menu="load-game" type="button">
+            <span class="menu-option-icon" aria-hidden="true">↥</span>
+            <span><strong>Cargar partida</strong><small>Continúa una crónica guardada</small></span>
+            <span class="menu-arrow" aria-hidden="true">→</span>
+          </button>
+          <button class="menu-option" data-menu="map-editor" type="button">
+            <span class="menu-option-icon" aria-hidden="true">▦</span>
+            <span><strong>Editar un mapa</strong><small>Diseña las tierras de tu mundo</small></span>
+            <span class="menu-arrow" aria-hidden="true">→</span>
+          </button>
+          <button class="menu-option" data-menu="create-civilization" type="button">
+            <span class="menu-option-icon" aria-hidden="true">✧</span>
+            <span><strong>Crear civilización</strong><small>Inventa un nuevo pueblo</small></span>
+            <span class="menu-arrow" aria-hidden="true">→</span>
+          </button>
+        </div>
+        <footer class="menu-footer">CRONOTEMPO <span>·</span> LA GUERRA DE LOS 1500 AÑOS</footer>
+      </section>
+
+      <section id="menu-workspace" class="menu-workspace" hidden>
+        <button id="menu-back" class="back-button" type="button"><span aria-hidden="true">←</span> Menú principal</button>
+        <div id="menu-workspace-content"></div>
+      </section>
+    </main>
+
+    <div id="game-screen" hidden>
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="Cronotempo: La guerra de los 1500 años">
+        <img class="brand-mark" src="assets/cronotempo-symbol.svg" alt="">
+        <span><strong>CRONOTEMPO</strong><small>LA GUERRA DE LOS 1500 AÑOS</small></span>
+      </a>
+      <div class="empire-heading">
+        <span class="eyebrow">CIVILIZACIÓN</span>
+        <h1 id="civilization-name">Cargando mundo…</h1>
+      </div>
+      <div class="turn-panel">
+        <span class="eyebrow">TURNO</span>
+        <strong id="turn-number">1</strong>
+        <button id="return-menu" class="menu-return-button" type="button">Menú</button>
+      </div>
+    </header>
+
+    <main class="game-layout">
+      <section class="panel-section empire-section" aria-labelledby="empire-section-title">
+        <div class="nation-heading">
+          <span class="eyebrow" id="empire-section-title">TU NACIÓN</span>
+          <strong id="nation-name">El Imperio de la Humanidad</strong>
+        </div>
+        <div class="empire-stats">
+          <div class="stat"><span class="stat-icon">⌂</span><span><strong id="city-count">0</strong><small>CIUDADES</small></span></div>
+          <div class="stat"><span class="stat-icon">⚑</span><span><strong id="unit-count">0</strong><small>UNIDADES</small></span></div>
+          <div class="stat"><span class="stat-icon">✿</span><span><strong id="food-count">0</strong><small>ALIMENTOS</small><small id="food-flow" class="food-flow">+0 / −0 por turno</small></span></div>
+          <div class="stat"><span class="stat-icon">⚒</span><span><strong id="production-count">0</strong><small>PRODUCCIÓN</small></span></div>
+          <div class="stat"><span class="stat-icon">◉</span><span><strong id="gold-count">0</strong><small>ORO</small></span></div>
+          <div class="stat"><span class="stat-icon">▤</span><span><strong id="grain-count">0</strong><small>GRANO</small></span></div>
+          <div class="stat"><span class="stat-icon">▧</span><span><strong id="stone-count">0</strong><small>PIEDRA</small></span></div>
+        </div>
+        <p class="resource-note">Los alimentos mantienen a las unidades; la producción sirve para formar unidades y construir edificios; el oro permite comprar unidades y casillas; el grano y la piedra son materiales necesarios para algunas unidades.</p>
+        <section id="tutorial-guide" class="tutorial-guide" hidden aria-labelledby="tutorial-title">
+          <div class="tutorial-guide-heading">
+            <span class="eyebrow">GUÍA DE INICIO <span id="tutorial-progress"></span></span>
+            <button id="tutorial-dismiss" type="button">Omitir</button>
+          </div>
+          <h2 id="tutorial-title"></h2>
+          <p id="tutorial-description"></p>
+          <button id="tutorial-action" class="secondary-button" type="button"></button>
+        </section>
+        <section class="civilization-passive" aria-labelledby="civilization-passive-title">
+          <span class="eyebrow" id="civilization-passive-title">PASIVA DE CIVILIZACIÓN</span>
+          <p id="civilization-passive">Cargando habilidad de la civilización…</p>
+        </section>
+        <section class="victory-objectives" aria-labelledby="victory-objectives-title">
+          <span class="eyebrow" id="victory-objectives-title">OBJETIVOS DE VICTORIA</span>
+          <div id="victory-objectives"></div>
+        </section>
+        <div id="diplomacy-summary" class="diplomacy-summary"></div>
+        <button id="open-diplomacy" class="secondary-button diplomacy-open" type="button">Diplomacia <span>→</span></button>
+      </section>
+
+      <section class="world-section" aria-label="Mapa del mundo">
+        <div class="world-toolbar">
+          <div>
+            <span class="eyebrow">FRONTERA DESCUBIERTA</span>
+            <h2 id="world-map-name">Tierras del amanecer</h2>
+          </div>
+          <div class="progression-buttons">
+            <button id="open-science" class="progression-button science-button" type="button"><span>⚗</span><span><small>CIENCIA</small><strong id="science-status">Sin investigación</strong></span></button>
+            <button id="open-culture" class="progression-button culture-button" type="button"><span>✧</span><span><small>CULTURA</small><strong id="culture-status">Sin doctrina</strong></span></button>
+          </div>
+          <div class="legend" aria-label="Leyenda del mapa">
+            <span><i class="legend-dot grass"></i>Pradera</span>
+            <span><i class="legend-dot plains"></i>Llanura</span>
+            <span><i class="legend-dot forest"></i>Bosque</span>
+            <span><i class="legend-dot hills"></i>Colinas</span>
+            <span><i class="legend-dot water"></i>Agua</span>
+            <span><i class="legend-dot mountain"></i>Montaña</span>
+            <span><i class="legend-dot desert"></i>Desierto</span>
+            <span><i class="legend-dot abyss"></i>Abismo</span>
+            <span><i class="legend-unit"><b></b></i>Unidad</span>
+            <span><i class="legend-territory player"></i>Tu influencia</span>
+            <span><i class="legend-territory foreign"></i>Influencia rival</span>
+            <span><i class="legend-territory purchase"></i>Casilla comprable</span>
+          </div>
+        </div>
+        <div class="map-frame">
+          <div class="map-controls" aria-label="Controles de zoom del mapa">
+            <span class="fog-hint"><i></i>Oscuro: explorado · Negro: sin descubrir</span>
+            <button id="zoom-out" type="button" aria-label="Alejar mapa" title="Alejar">−</button>
+            <input id="map-zoom" type="range" min="0.6" max="2" step="0.1" value="1" aria-label="Nivel de zoom">
+            <button id="zoom-in" type="button" aria-label="Acercar mapa" title="Acercar">+</button>
+            <button id="zoom-reset" class="zoom-reset" type="button">Restablecer</button>
+            <output id="zoom-level" for="map-zoom">100 %</output>
+          </div>
+          <div id="map-viewport" class="map-viewport" role="region" tabindex="0" aria-label="Mapa desplazable. Arrastra con el botón izquierdo para explorar el mundo.">
+            <div id="game-map" class="game-map" role="grid" aria-label="Mapa táctico"></div>
+          </div>
+          <div class="map-caption"><span class="live-dot"></span> <span id="map-caption">Explora y funda tu primer asentamiento.</span></div>
+        </div>
+      </section>
+
+      <aside class="side-panel">
+        <section class="panel-section selected-section">
+          <div class="section-title">
+            <span class="eyebrow">INFORME</span>
+            <span class="status-chip" id="status-chip">EN MARCHA</span>
+          </div>
+          <div id="selection-details" class="selection-details">
+            <div class="empty-selection-icon" aria-hidden="true">⌖</div>
+            <h2>Sin selección</h2>
+            <p>Selecciona una unidad o una casilla para consultar sus detalles.</p>
+          </div>
+          <div id="unit-actions" class="unit-actions"></div>
+        </section>
+
+        <details class="panel-section event-section">
+          <summary class="event-summary">
+            <span class="eyebrow">CRÓNICA</span>
+            <span class="event-toggle-label">
+              <span class="event-toggle-closed">Mostrar</span>
+              <span class="event-toggle-open">Ocultar</span>
+              <span class="event-chevron" aria-hidden="true">⌄</span>
+            </span>
+          </summary>
+          <ol id="event-log" class="event-log" aria-live="polite"></ol>
+        </details>
+        <button id="end-turn" class="end-turn-button end-turn-bottom" type="button" disabled>Finalizar turno <span aria-hidden="true">→</span></button>
+        <footer class="panel-footer">Una nueva era comienza · <span id="footer-civilization">Imperio de la Humanidad</span></footer>
+      </aside>
+    </main>
+    </div>
+  </div>
+  <dialog id="progression-dialog" class="progression-dialog" aria-labelledby="progression-title">
+    <div class="progression-dialog-header">
+      <div><span class="eyebrow" id="progression-kicker">PROGRESO DE LA CIVILIZACIÓN</span><h2 id="progression-title">Ciencia</h2></div>
+      <div class="progression-header-actions">
+        <button id="toggle-progression-branches" class="branch-toggle" type="button" aria-pressed="false">Ver ramas</button>
+        <button id="close-progression" class="dialog-close" type="button" aria-label="Cerrar">×</button>
+      </div>
+    </div>
+    <p id="progression-summary" class="progression-summary"></p>
+    <div id="progression-content" class="progression-content"></div>
+  </dialog>
+  <dialog id="diplomacy-dialog" class="progression-dialog diplomacy-dialog" aria-labelledby="diplomacy-title">
+    <div class="progression-dialog-header">
+      <div><span class="eyebrow">RELACIONES ENTRE CIVILIZACIONES</span><h2 id="diplomacy-title">Diplomacia</h2></div>
+      <button id="close-diplomacy" class="dialog-close" type="button" aria-label="Cerrar">×</button>
+    </div>
+    <p class="progression-summary">Explora para establecer contacto. Puedes declarar la guerra o proponer la paz; el comercio y las delegaciones se suspenden durante el conflicto.</p>
+    <div id="diplomacy-content" class="diplomacy-content"></div>
+  </dialog>
+  <dialog id="war-confirm-dialog" class="exit-dialog war-confirm-dialog" aria-labelledby="war-confirm-title">
+    <span class="eyebrow">ORDEN MILITAR</span>
+    <h2 id="war-confirm-title">¿Declarar la guerra?</h2>
+    <p id="war-confirm-message"></p>
+    <div class="exit-dialog-actions">
+      <button id="confirm-war-attack" class="primary-button" type="button">Declarar la guerra y continuar</button>
+      <button id="cancel-war-attack" class="dialog-close-button" type="button">Cancelar orden</button>
+    </div>
+  </dialog>
+  <dialog id="victory-dialog" class="victory-dialog" aria-labelledby="victory-title">
+    <span class="eyebrow">CRONOTEMPO · LA GUERRA DE LOS 1500 AÑOS</span>
+    <h2 id="victory-title">Victoria</h2>
+    <p id="victory-description"></p>
+    <div class="endgame-summary">
+      <div class="endgame-metrics">
+        <div><strong id="endgame-turns">0</strong><span>Turno</span></div>
+        <div><strong id="endgame-cities">0</strong><span>Ciudades</span></div>
+        <div><strong id="endgame-units">0</strong><span>Unidades</span></div>
+        <div><strong id="endgame-technologies">0/0</strong><span>Tecnologías</span></div>
+        <div><strong id="endgame-civics">0</strong><span>Políticas</span></div>
+        <div><strong id="endgame-capitals">0/0</strong><span>Capitales rivales</span></div>
+      </div>
+      <section class="endgame-section">
+        <h3>Estado de los rivales</h3>
+        <ul id="endgame-opponents"></ul>
+      </section>
+      <section class="endgame-section">
+        <h3>Hitos de la partida</h3>
+        <ol id="endgame-milestones"></ol>
+      </section>
+    </div>
+    <button id="victory-menu" class="primary-button" type="button">Volver al menú</button>
+  </dialog>
+  <dialog id="exit-dialog" class="exit-dialog" aria-labelledby="exit-title">
+    <span class="eyebrow">CRONOTEMPO · TURNO <span id="exit-turn">1</span></span>
+    <h2 id="exit-title">¿Qué quieres hacer?</h2>
+    <p>Antes de volver al menú, puedes guardar esta partida para continuarla después.</p>
+    <div class="exit-dialog-actions">
+      <button id="save-and-exit" class="primary-button" type="button">Guardar y volver al menú</button>
+      <button id="exit-without-saving" class="secondary-button" type="button">Salir sin guardar</button>
+      <button id="cancel-exit" class="dialog-close-button" type="button">Seguir jugando</button>
+    </div>
+  </dialog>
+  <dialog id="pending-actions-dialog" class="progression-dialog pending-actions-dialog" aria-labelledby="pending-actions-title">
+    <div class="progression-dialog-header">
+      <div><span class="eyebrow">TURNO <span id="pending-actions-turn">1</span></span><h2 id="pending-actions-title">Aún quedan acciones</h2></div>
+      <button id="close-pending-actions" class="dialog-close" type="button" aria-label="Cerrar">×</button>
+    </div>
+    <p class="progression-summary">Todavía tienes acciones disponibles. Puedes ir directamente a cada una o terminar el turno de todos modos.</p>
+    <div id="pending-actions-list" class="pending-actions-list"></div>
+    <div class="pending-actions-footer">
+      <button id="finish-turn-anyway" class="secondary-button" type="button">Finalizar turno de todos modos</button>
+    </div>
+  </dialog>
+  <div id="turn-transition" class="turn-transition" role="status" aria-live="polite" hidden>
+    <span class="eyebrow">TURNO EN CURSO</span>
+    <strong id="turn-transition-name"></strong>
+  </div>
+  <div id="game-message" class="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

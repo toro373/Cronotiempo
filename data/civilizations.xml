@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gameData>
+  <civilizations>
+    <civilization id="humanity" name="El Imperio de la Humanidad" adjective="Imperial" color="#d3b879" capital="Urboras" aggression="25">
+      <description>Una humanidad unida bajo un solo estandarte, con capital en Urboras. Sus ciudades forman unidades con menor coste de producción y compra.</description>
+      <abilities unitProductionMultiplier="0.8" unitPurchaseMultiplier="0.9" unitStrengthMultiplier="1" progressionCostMultiplier="1">
+        <ability>Unidades un 20 % más baratas de producir y un 10 % más baratas de comprar.</ability>
+      </abilities>
+      <cities>
+        <city>Urboras</city>
+        <city>Neo Urboras</city>
+        <city>El Olvidado</city>
+        <city>El Marcado</city>
+        <city>Urboquiem</city>
+        <city>Sol de Bronce</city>
+        <city>Valle del Alba</city>
+        <city>Ciudad del Estandarte</city>
+        <city>Puerto Imperial</city>
+        <city>Fortaleza del Este</city>
+        <city>Campos de Urboras</city>
+        <city>Vigilia Dorada</city>
+        <city>Nueva Concordia</city>
+      </cities>
+      <startingUnits>
+        <unit type="settler" />
+        <unit type="imperial-guard" />
+      </startingUnits>
+      <availableUnits>
+        <unit type="generic-explorer" />
+      </availableUnits>
+    </civilization>
+    <civilization id="demonic-unified-front" name="Frente Unificado Demoniaco" adjective="Demoniaco" color="#b65353" capital="Ulbami" aggression="75">
+      <description>Un frente unido bajo una misma voluntad, dispuesto a extender su influencia desde Ulbami. Sus unidades son un 10 % más fuertes, pero más costosas de producir.</description>
+      <abilities unitProductionMultiplier="1.25" unitPurchaseMultiplier="1" unitStrengthMultiplier="1.1" progressionCostMultiplier="1">
+        <ability>Unidades un 10 % más fuertes, con un 25 % más de coste de producción.</ability>
+      </abilities>
+      <cities>
+        <city>Ulbami</city>
+        <city>Vocequieta</city>
+        <city>Brasa Profunda</city>
+        <city>Azufral</city>
+        <city>Garganta de Ceniza</city>
+        <city>Foso Carmesi</city>
+        <city>Trono de Escoria</city>
+        <city>Puerta Bermeja</city>
+        <city>Horno de Ulbami</city>
+        <city>Cuerno Abisal</city>
+        <city>Vado de Llamas</city>
+      </cities>
+      <startingUnits>
+        <unit type="hell-forger" />
+        <unit type="infernal-raider" />
+      </startingUnits>
+      <availableUnits>
+        <unit type="generic-explorer" />
+      </availableUnits>
+    </civilization>
+    <civilization id="angelical-councils" name="República de Consejos Angelical" adjective="Angelical" color="#8db8d3" capital="Urbamini" aggression="15">
+      <description>Una república guiada por consejos, cuyo destino comienza en la ciudad de Urbamini. Sus unidades son más débiles, pero avanza más rápido en ciencia y cultura.</description>
+      <abilities unitProductionMultiplier="1" unitPurchaseMultiplier="1" unitStrengthMultiplier="0.85" progressionCostMultiplier="0.8">
+        <ability>Las tecnologías y políticas culturales cuestan un 20 % menos; sus unidades son un 15 % más débiles.</ability>
+      </abilities>
+      <cities>
+        <city>Urbamini</city>
+        <city>Albor de Justicia</city>
+        <city>Velo Celeste</city>
+        <city>Consejo del Alba</city>
+        <city>Altos del Firmamento</city>
+        <city>Custodia Serena</city>
+        <city>Puerta de las Nubes</city>
+        <city>Estrella del Veredicto</city>
+        <city>Refugio de los Coros</city>
+        <city>Claridad Eterna</city>
+      </cities>
+      <startingUnits>
+        <unit type="council-founder" />
+        <unit type="seraphic-sentinel" />
+      </startingUnits>
+      <availableUnits>
+        <unit type="generic-explorer" />
+      </availableUnits>
+    </civilization>
+    <civilization id="pagan-sun" name="Nación Independiente del Sol Pagano" adjective="Pagano" color="#e2a947" capital="Sol Pagano" aggression="55" canFoundSettlers="false">
+      <description>Una nación jugable que comienza con la ciudad de Sol Pagano. Sus guerreros élficos y enanos pueden cruzar el mar y conquistar poblados para expandirse; no puede producir colonos.</description>
+      <abilities unitProductionMultiplier="1" unitPurchaseMultiplier="1" unitStrengthMultiplier="1" progressionCostMultiplier="1">
+        <ability>Comienza con Sol Pagano como capital y no puede producir colonos. Al conquistar un poblado bárbaro funda allí una nueva ciudad; si no hay campamentos bárbaros, puede fundarla en poblados élficos y enanos.</ability>
+        <ability>Sus unidades pueden embarcar y cruzar casillas de agua gastando más movimiento.</ability>
+      </abilities>
+      <cities>
+        <city>Sol Pagano</city>
+        <city>Isla del Alba</city>
+        <city>Puerto del Cenit</city>
+        <city>Templo de la Aurora</city>
+        <city>Bahía Dorada</city>
+        <city>Puerto Gris</city>
+        <city>Isla del Ocaso</city>
+        <city>Ensenada de Bruma</city>
+        <city>Muelles de Ceniza</city>
+        <city>Arrecife Sombrío</city>
+        <city>Puerto de la Marea Negra</city>
+        <city>Faro del Alba Pálida</city>
+        <city>Bahía Silenciosa</city>
+        <city>Isla de las Mareas</city>
+      </cities>
+      <startingUnits>
+        <unit type="elf-scout" />
+        <unit type="dwarf-guardian" />
+        <unit type="pagan-builder" />
+      </startingUnits>
+    </civilization>
+    <civilization id="barbarians" name="Pueblos Bárbaros" adjective="Bárbaro" color="#aa7651" aggression="85" playable="false" independent="true">
+      <description>Clanes independientes que habitan poblados dispersos. No forman parte de ninguna de las civilizaciones jugables.</description>
+      <abilities unitProductionMultiplier="1" unitPurchaseMultiplier="1" unitStrengthMultiplier="1" progressionCostMultiplier="1">
+        <ability>Sus poblados están defendidos por saqueadores bárbaros y pueden ser conquistados.</ability>
+      </abilities>
+      <cities>
+        <city>Poblado bárbaro</city>
+      </cities>
+      <startingUnits>
+        <unit type="barbarian-raider" />
+      </startingUnits>
+    </civilization>
+    <civilization id="dragons" name="Dragones" adjective="Dracónico" color="#d85a32" aggression="100" playable="false" independent="true">
+      <description>Dragones antiguos custodian una guarida apartada. Son extraordinariamente resistentes y peligrosos en combate.</description>
+      <abilities unitProductionMultiplier="1" unitPurchaseMultiplier="1" unitStrengthMultiplier="1" progressionCostMultiplier="1">
+        <ability>Guaridas aisladas por el mar; sus dragones tienen fuerza y salud excepcionales.</ability>
+      </abilities>
+      <cities>
+        <city>Guarida del Dragón</city>
+      </cities>
+      <startingUnits>
+        <unit type="dragon" />
+      </startingUnits>
+    </civilization>
+  </civilizations>
+</gameData>

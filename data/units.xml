@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<units>
+  <unit id="settler" name="Colono" icon="⚒" role="fundador" faction="humanity" movement="2" strength="0" cost="12" purchaseCost="36" canFound="true">
+    <description>Busca un lugar fértil para fundar una nueva ciudad.</description>
+  </unit>
+  <unit id="imperial-guard" name="Guardia imperial" icon="⚔" role="infantería" faction="humanity" movement="2" strength="8" cost="10" purchaseCost="30">
+    <description>Infantería disciplinada que protege las fronteras del Imperio.</description>
+  </unit>
+  <unit id="hell-forger" name="Forjador infernal" icon="♨" role="fundador" faction="demonic-unified-front" movement="2" strength="2" cost="12" purchaseCost="36" canFound="true">
+    <description>Un pionero nacido entre brasas, capaz de levantar una ciudad para el Frente.</description>
+  </unit>
+  <unit id="infernal-raider" name="Asaltante infernal" icon="⚔" role="infantería" faction="demonic-unified-front" movement="2" strength="9" cost="10" purchaseCost="30">
+    <description>Guerrero de vanguardia que defiende las fronteras del Frente Unificado.</description>
+  </unit>
+  <unit id="council-founder" name="Fundador de consejos" icon="✧" role="fundador" faction="angelical-councils" movement="2" strength="1" cost="12" purchaseCost="36" canFound="true">
+    <description>Representante de los consejos, enviado para establecer una nueva ciudad.</description>
+  </unit>
+  <unit id="seraphic-sentinel" name="Centinela seráfico" icon="✦" role="infantería" faction="angelical-councils" movement="2" strength="8" cost="10" purchaseCost="30">
+    <description>Guardián alado que protege a la República y a sus habitantes.</description>
+  </unit>
+  <unit id="imperial-crossbow" name="Ballestero imperial" icon="⚔" role="infantería a distancia" faction="humanity" movement="2" strength="12" range="3" cost="14" purchaseCost="42" stone="2" grain="1">
+    <description>Infantería de apoyo equipada para defender las ciudades del Imperio a distancia.</description>
+  </unit>
+  <unit id="infernal-saboteur" name="Saboteador infernal" icon="♨" role="infantería" faction="demonic-unified-front" movement="2" strength="12" cost="14" purchaseCost="42" stone="2" grain="1">
+    <description>Especialista del Frente que abre paso a sus fuerzas en territorio hostil.</description>
+  </unit>
+  <unit id="angelical-arcanist" name="Arcanista angelical" icon="✦" role="unidad a distancia" faction="angelical-councils" movement="2" strength="12" range="3" cost="14" purchaseCost="42" stone="2" grain="1">
+    <description>Defensor de los consejos que canaliza su conocimiento en el campo de batalla.</description>
+  </unit>
+  <unit id="imperial-lancer" name="Lancero imperial" icon="⚔" role="caballería" faction="humanity" movement="3" strength="14" cost="18" purchaseCost="54" stone="1" grain="2">
+    <description>Caballería veloz que refuerza las patrullas imperiales y persigue fuerzas dispersas.</description>
+  </unit>
+  <unit id="infernal-hound" name="Sabueso de ascuas" icon="♨" role="hostigador" faction="demonic-unified-front" movement="3" strength="14" cost="18" purchaseCost="54" stone="1" grain="2">
+    <description>Bestia de guerra que atraviesa el campo con rapidez y acosa las líneas enemigas.</description>
+  </unit>
+  <unit id="angelical-lancer" name="Custodio alado" icon="✦" role="caballería" faction="angelical-councils" movement="3" strength="13" cost="18" purchaseCost="54" stone="1" grain="2">
+    <description>Custodio móvil que protege a los consejos y acude con rapidez donde se le necesita.</description>
+  </unit>
+  <unit id="imperial-colossus" name="Coloso imperial" icon="⚔" role="infantería pesada" faction="humanity" movement="1" strength="19" cost="22" purchaseCost="66" stone="3" grain="2">
+    <description>Una fortaleza andante de acero, lenta pero difícil de desalojar del campo de batalla.</description>
+  </unit>
+  <unit id="infernal-juggernaut" name="Juggernaut abisal" icon="♨" role="infantería pesada" faction="demonic-unified-front" movement="1" strength="20" cost="22" purchaseCost="66" stone="3" grain="2">
+    <description>Un ariete viviente forjado en las profundidades, diseñado para quebrar defensas.</description>
+  </unit>
+  <unit id="angelical-avatar" name="Avatar del consejo" icon="✦" role="infantería pesada" faction="angelical-councils" movement="1" strength="18" cost="22" purchaseCost="66" stone="3" grain="2">
+    <description>Guardián monumental que encarna la voluntad conjunta de los consejos.</description>
+  </unit>
+  <unit id="imperial-builder" name="Constructor imperial" icon="⚒" role="constructor" faction="humanity" movement="2" strength="0" cost="6" purchaseCost="18" canBuild="true">
+    <description>Puede construir tres mejoras en territorio propio; después se consume.</description>
+  </unit>
+  <unit id="infernal-builder" name="Constructor infernal" icon="⚒" role="constructor" faction="demonic-unified-front" movement="2" strength="0" cost="6" purchaseCost="18" canBuild="true">
+    <description>Puede construir tres mejoras en territorio propio; después se consume.</description>
+  </unit>
+  <unit id="angelical-builder" name="Constructor angelical" icon="⚒" role="constructor" faction="angelical-councils" movement="2" strength="0" cost="6" purchaseCost="18" canBuild="true">
+    <description>Puede construir tres mejoras en territorio propio; después se consume.</description>
+  </unit>
+  <unit id="barbarian-raider" name="Saqueador bárbaro" icon="☠" role="guerrero" faction="barbarians" movement="2" strength="6" cost="0" purchaseCost="0">
+    <description>Defensor de los campamentos bárbaros en partidas guardadas antiguas.</description>
+  </unit>
+  <unit id="dragon" name="Dragón ancestral" icon="♨" role="bestia legendaria" faction="dragons" movement="2" strength="55" cost="0" purchaseCost="0">
+    <description>Una criatura colosal que custodia una guarida apartada. Su fuerza y resistencia superan con creces a cualquier unidad corriente; quien la derrote obtiene su lealtad.</description>
+  </unit>
+  <unit id="solar-knight" name="Caballero del Sol" icon="☼" role="caballería sagrada" faction="humanity" movement="3" strength="20" cost="24" purchaseCost="72" stone="2" grain="2">
+    <description>Caballero imperial consagrado a la luz de Urboras, rápido y poderoso en combate.</description>
+  </unit>
+  <unit id="oni" name="Oni" icon="鬼" role="guerrero infernal" faction="demonic-unified-front" movement="2" strength="24" cost="26" purchaseCost="78" stone="3" grain="2">
+    <description>Gigante demoníaco surgido del Portal al Infierno, temible en el asalto.</description>
+  </unit>
+  <unit id="archangel" name="Arcángel" icon="✧" role="guardián celestial" faction="angelical-councils" movement="3" strength="26" range="2" cost="25" purchaseCost="75" stone="2" grain="2">
+    <description>Comandante alado de la Gran Biblioteca de la Justicia, capaz de defender y atacar a distancia con gran fuerza.</description>
+  </unit>
+  <unit id="abyss-explorer" name="Explorador del Abismo" icon="⚓" role="explorador naval" faction="pagan-sun" movement="3" strength="16" range="2" cost="22" purchaseCost="66" stone="2" grain="1" canSail="true">
+    <description>Marino de los Puertos Grises que navega entre mares y explora las zonas abismales.</description>
+  </unit>
+  <unit id="abyss-beast" name="Bestia del Abismo" icon="鬼" role="criatura hostil" faction="beasts" movement="2" strength="12" cost="0" purchaseCost="0">
+    <description>Monstruo surgido de las grietas del Abismo. Ataca a cualquier unidad o ciudad que se acerque.</description>
+  </unit>
+  <unit id="galley" name="Galera" icon="⛵" role="barco de guerra" faction="generic" movement="4" strength="14" range="2" cost="18" purchaseCost="54" stone="2" grain="1" canSail="true">
+    <description>Barco de guerra genérico. Puede navegar por casillas de agua y atacar objetivos a corta distancia.</description>
+  </unit>
+  <unit id="generic-explorer" name="Explorador" icon="⌖" role="explorador" faction="generic" movement="5" strength="3" maxHealth="16" cost="9" purchaseCost="27">
+    <description>Unidad rápida para descubrir territorios; se mueve mucho, pero su escasa resistencia la hace vulnerable en combate.</description>
+  </unit>
+  <unit id="merchant" name="Comerciante" icon="⚖" role="unidad comercial" faction="generic" movement="4" strength="0" cost="12" purchaseCost="36" canSail="true" canTrade="true">
+    <description>Recorre las rutas terrestres y marítimas entre ciudades. Una ruta comercial permanente mejora los ingresos de su ciudad de origen.</description>
+  </unit>
+  <unit id="archer" name="Arquero" icon="➶" role="unidad a distancia" faction="generic" movement="3" strength="7" maxHealth="20" range="3" cost="12" purchaseCost="36" grain="1">
+    <description>Hostiga hasta a tres casillas de distancia; se mueve con soltura, pero su escasa resistencia lo hace vulnerable.</description>
+  </unit>
+  <unit id="catapult" name="Catapulta" icon="⚒" role="asedio a distancia" faction="generic" movement="1" strength="10" range="3" cost="18" purchaseCost="54" stone="3" grain="1">
+    <description>Máquina de asedio lenta y potente, capaz de atacar a unidades y ciudades hasta a tres casillas.</description>
+  </unit>
+  <unit id="spearman" name="Lancero" icon="⚔" role="infantería" faction="generic" movement="2" strength="10" cost="13" purchaseCost="39" stone="1" grain="1">
+    <description>Infantería versátil que sostiene la línea frente a las fuerzas enemigas.</description>
+  </unit>
+  <unit id="longbowman" name="Arquero de arco largo" icon="➶" role="unidad a distancia" faction="generic" movement="3" strength="10" maxHealth="24" range="3" cost="17" purchaseCost="51" grain="2">
+    <description>Arquero especializado que hostiga a los ejércitos desde lejos, con gran alcance y poca resistencia.</description>
+  </unit>
+  <unit id="trebuchet" name="Trabuquete" icon="⚒" role="asedio a distancia" faction="generic" movement="1" strength="14" range="3" cost="22" purchaseCost="66" stone="3" grain="2">
+    <description>Máquina de asedio pesada que lanza proyectiles contra unidades y ciudades hasta a tres casillas.</description>
+  </unit>
+  <unit id="musketeer" name="Arcabucero" icon="⚔" role="infantería a distancia" faction="generic" movement="2" strength="15" range="3" cost="24" purchaseCost="72" stone="2" grain="3">
+    <description>Infantería equipada con armas de fuego alquímico, eficaz a media distancia.</description>
+  </unit>
+  <unit id="elf-scout" name="Explorador élfico" icon="❧" role="guerrero" faction="elves" movement="3" strength="7" cost="12" purchaseCost="36">
+    <description>Defiende los asentamientos élficos y se desplaza con rapidez por el bosque.</description>
+  </unit>
+  <unit id="dwarf-guardian" name="Guardián enano" icon="⛏" role="guerrero" faction="dwarves" movement="1" strength="9" cost="14" purchaseCost="42">
+    <description>Protege los campamentos enanos con armadura resistente y gran fuerza.</description>
+  </unit>
+  <unit id="pagan-builder" name="Maestro de los Puertos Grises" icon="⚒" role="constructor" faction="pagan-sun" movement="2" strength="0" cost="8" purchaseCost="24" canBuild="true">
+    <description>Puede levantar tres construcciones en el territorio de las ciudades del Sol Pagano.</description>
+  </unit>
+  <unit id="imperial-battle-mage" name="Mago de batalla imperial" icon="✧" role="mago a distancia" faction="humanity" movement="2" strength="9" range="3" cost="18" purchaseCost="54" stone="1" grain="2">
+    <description>Un estratega arcano que combina disciplina imperial con hechizos de precisión.</description>
+  </unit>
+  <unit id="infernal-ash-witch" name="Brujo de ceniza" icon="♨" role="mago de asedio" faction="demonic-unified-front" movement="2" strength="10" range="3" cost="20" purchaseCost="60" stone="2" grain="2">
+    <description>Canaliza las llamas del abismo en devastadoras descargas contra ejércitos y ciudades.</description>
+  </unit>
+  <unit id="angelical-star-weaver" name="Teúrgo de las estrellas" icon="✦" role="mago a distancia" faction="angelical-councils" movement="2" strength="9" range="3" cost="18" purchaseCost="54" stone="1" grain="2">
+    <description>Guía la energía celeste con serenidad y protege a sus aliados desde la retaguardia.</description>
+  </unit>
+</units>

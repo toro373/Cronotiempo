@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<progression>
+  <technologies>
+    <technology id="agriculture" name="Agricultura" cost="6">
+      <description>Mejores cultivos y almacenamiento de excedentes permiten sostener nuevas expediciones de colonos.</description>
+      <unlocks>
+        <building id="granary" />
+        <unit id="settler" />
+        <unit id="hell-forger" />
+        <unit id="council-founder" />
+      </unlocks>
+    </technology>
+    <technology id="commerce" name="Comercio" cost="12">
+      <description>Las redes mercantiles permiten formar comerciantes y establecer rutas permanentes que enriquecen sus ciudades de origen.</description>
+      <requires><technology id="agriculture" /></requires>
+      <unlocks><unit id="merchant" /></unlocks>
+    </technology>
+    <technology id="solar-doctrine" name="Doctrina del Sol" cost="24" civilization="humanity">
+      <description>Los estudios solares del Imperio permiten alzar la Catedral del Sol, cuya orden forma Caballeros del Sol.</description>
+      <requires><technology id="military-tactics" /></requires>
+      <unlocks><building id="cathedral-of-the-sun" /></unlocks>
+    </technology>
+    <technology id="infernal-portal-theory" name="Teoría del Portal Infernal" cost="24" civilization="demonic-unified-front">
+      <description>El Frente aprende a abrir portales estables para construir un Portal al Infierno y convocar onis.</description>
+      <requires><technology id="mysticism" /></requires>
+      <unlocks><building id="infernal-portal" /></unlocks>
+    </technology>
+    <technology id="justice-archives" name="Ciencia de la Justicia" cost="24" civilization="angelical-councils">
+      <description>La República reúne su saber en la Gran Biblioteca de la Justicia, donde se forman arcángeles.</description>
+      <requires><technology id="writing" /></requires>
+      <unlocks><building id="great-library-of-justice" /></unlocks>
+    </technology>
+    <technology id="gray-harbor-engineering" name="Ingeniería de los Puertos Grises" cost="24" civilization="pagan-sun">
+      <description>Los saberes navales del Sol Pagano permiten crear Puertos Grises y formar exploradores del Abismo.</description>
+      <requires><technology id="navigation" /></requires>
+      <unlocks><building id="gray-harbors" /></unlocks>
+    </technology>
+    <technology id="navigation" name="Navegación" cost="15">
+      <description>La construcción naval permite cruzar los mares y alcanzar las islas lejanas.</description>
+      <requires>
+        <technology id="agriculture" />
+      </requires>
+      <unlocks>
+        <unit id="galley" />
+      </unlocks>
+    </technology>
+    <technology id="archery" name="Tiro con arco" cost="11">
+      <description>Las técnicas de tiro permiten formar arqueros capaces de hostigar al enemigo desde lejos.</description>
+      <requires>
+        <technology id="agriculture" />
+      </requires>
+      <unlocks>
+        <unit id="archer" />
+      </unlocks>
+    </technology>
+    <technology id="writing" name="Escritura" cost="9">
+      <description>El conocimiento escrito permite organizar bibliotecas y conservar descubrimientos.</description>
+      <requires>
+        <technology id="agriculture" />
+      </requires>
+      <unlocks>
+        <building id="library" />
+      </unlocks>
+    </technology>
+    <technology id="mysticism" name="Misticismo" cost="15">
+      <description>Los saberes arcanos permiten entrenar magos, brujos y teúrgos según la tradición de cada civilización.</description>
+      <requires>
+        <technology id="writing" />
+      </requires>
+      <unlocks>
+        <unit id="imperial-battle-mage" />
+        <unit id="infernal-ash-witch" />
+        <unit id="angelical-star-weaver" />
+      </unlocks>
+    </technology>
+    <technology id="engineering" name="Ingeniería" cost="12">
+      <description>La ingeniería mejora la producción urbana y permite formar nuevas unidades especializadas.</description>
+      <requires>
+        <technology id="writing" />
+      </requires>
+      <unlocks>
+        <building id="workshop" />
+        <unit id="imperial-crossbow" />
+        <unit id="infernal-saboteur" />
+        <unit id="angelical-arcanist" />
+        <unit id="catapult" />
+      </unlocks>
+    </technology>
+    <technology id="fortification" name="Fortificación" cost="18">
+      <description>El estudio de las defensas urbanas permite construir murallas que protegen a las ciudades y refuerzan su respuesta ante los asedios.</description>
+      <requires><technology id="engineering" /></requires>
+      <unlocks><building id="city-walls" /></unlocks>
+    </technology>
+    <technology id="military-tactics" name="Tácticas militares" cost="14">
+      <description>La coordinación de exploradores y jinetes abre paso a fuerzas rápidas y especializadas.</description>
+      <requires>
+        <technology id="agriculture" />
+      </requires>
+      <unlocks>
+        <unit id="imperial-lancer" />
+        <unit id="infernal-hound" />
+        <unit id="angelical-lancer" />
+        <unit id="spearman" />
+      </unlocks>
+    </technology>
+    <technology id="metallurgy" name="Metalurgia avanzada" cost="18">
+      <description>El dominio de aleaciones resistentes permite desplegar infantería pesada en cada ejército.</description>
+      <requires>
+        <technology id="engineering" />
+      </requires>
+      <unlocks>
+        <unit id="imperial-colossus" />
+        <unit id="infernal-juggernaut" />
+        <unit id="angelical-avatar" />
+      </unlocks>
+    </technology>
+    <technology id="composite-bows" name="Arcos compuestos" cost="21">
+      <description>La combinación de materiales flexibles y nuevas técnicas de tiro amplía el alcance de los arqueros.</description>
+      <requires>
+        <technology id="archery" />
+      </requires>
+      <unlocks>
+        <unit id="longbowman" />
+      </unlocks>
+    </technology>
+    <technology id="mathematics" name="Matemáticas aplicadas" cost="23">
+      <description>Los cálculos y la observación sistemática permiten organizar academias para estudiar el mundo.</description>
+      <requires>
+        <technology id="writing" />
+      </requires>
+      <unlocks>
+        <building id="academy" />
+      </unlocks>
+    </technology>
+    <technology id="siege-engineering" name="Ingeniería de asedio" cost="27">
+      <description>La mecánica de precisión permite construir máquinas de asedio y arsenales especializados.</description>
+      <requires>
+        <technology id="engineering" />
+        <technology id="military-tactics" />
+      </requires>
+      <unlocks>
+        <unit id="trebuchet" />
+        <building id="arsenal" />
+      </unlocks>
+    </technology>
+    <technology id="gunpowder" name="Fuego alquímico" cost="30">
+      <description>La mezcla de sustancias explosivas transforma las armas y las tácticas de guerra.</description>
+      <requires>
+        <technology id="mathematics" />
+        <technology id="metallurgy" />
+      </requires>
+      <unlocks>
+        <unit id="musketeer" />
+      </unlocks>
+    </technology>
+    <technology id="scientific-method" name="Método científico" cost="36">
+      <description>La experimentación compartida impulsa la investigación y permite fundar observatorios.</description>
+      <requires>
+        <technology id="mysticism" />
+        <technology id="gunpowder" />
+      </requires>
+      <unlocks>
+        <building id="observatory" />
+      </unlocks>
+    </technology>
+  </technologies>
+  <buildings>
+    <building id="granary" name="Granero" cost="8" food="2" grain="1">
+      <description>Almacena alimentos y mejora el crecimiento de la ciudad.</description>
+      <requiresTechnology id="agriculture" />
+    </building>
+    <building id="library" name="Biblioteca" cost="10" science="2">
+      <description>Sus archivos aportan ciencia a toda la civilización.</description>
+      <requiresTechnology id="writing" />
+    </building>
+    <building id="workshop" name="Taller de ingeniería" cost="12" production="2" stone="1">
+      <description>Mejora la producción local de la ciudad.</description>
+      <requiresTechnology id="engineering" />
+    </building>
+    <building id="city-walls" name="Murallas" cost="18" cityHealth="20" cityDefense="8" damageReduction="0.35">
+      <description>Añade 20 puntos de salud a la ciudad, reduce un 35 % el daño de los asedios y refuerza su contraataque.</description>
+      <requiresTechnology id="fortification" />
+    </building>
+    <building id="academy" name="Academia" cost="20" science="3">
+      <description>Sus estudios avanzados aportan ciencia a toda la civilización.</description>
+      <requiresTechnology id="mathematics" />
+    </building>
+    <building id="arsenal" name="Arsenal" cost="18" production="2" stone="1">
+      <description>Organiza la producción de equipo militar y aporta materiales a la ciudad.</description>
+      <requiresTechnology id="siege-engineering" />
+    </building>
+    <building id="observatory" name="Observatorio" cost="28" science="4">
+      <description>La observación del firmamento amplía el conocimiento de toda la civilización.</description>
+      <requiresTechnology id="scientific-method" />
+    </building>
+    <building id="cathedral-of-the-sun" name="Catedral del Sol" cost="24" placement="territory" unitId="solar-knight" unitInterval="5">
+      <description>Construcción imperial edificable en el territorio de una ciudad. Forma Caballeros del Sol de manera periódica.</description>
+      <requiresTechnology id="solar-doctrine" />
+    </building>
+    <building id="infernal-portal" name="Portal al Infierno" cost="26" placement="territory" unitId="oni" unitInterval="5">
+      <description>Portal territorial del Frente que convoca onis de forma periódica.</description>
+      <requiresTechnology id="infernal-portal-theory" />
+    </building>
+    <building id="great-library-of-justice" name="Gran Biblioteca de la Justicia" cost="25" placement="territory" unitId="archangel" unitInterval="5">
+      <description>Gran obra de la República que forma arcángeles en el territorio de una ciudad.</description>
+      <requiresTechnology id="justice-archives" />
+    </building>
+    <building id="gray-harbors" name="Puertos Grises" cost="22" placement="territory" unitId="abyss-explorer" unitInterval="5">
+      <description>Red portuaria que forma exploradores del Abismo periódicamente en el territorio de una ciudad.</description>
+      <requiresTechnology id="gray-harbor-engineering" />
+    </building>
+  </buildings>
+  <civics>
+    <civic id="oral-tradition" name="Tradición oral" cost="10" culture="1">
+      <description>Las historias compartidas refuerzan la identidad de la civilización.</description>
+    </civic>
+    <civic id="council-government" name="Gobierno de consejos" cost="18" science="1">
+      <description>La cooperación entre comunidades favorece el intercambio de ideas.</description>
+      <requires><civic id="oral-tradition" /></requires>
+    </civic>
+    <civic id="industrial-policy" name="Política industrial" cost="28" production="1">
+      <description>La planificación común mejora la producción de todas las ciudades.</description>
+      <requires><civic id="council-government" /></requires>
+    </civic>
+    <civic id="civic-reform" name="Reforma cívica" cost="38" culture="1">
+      <description>La participación ciudadana consolida las instituciones y prepara nuevas corrientes políticas.</description>
+      <requires><civic id="industrial-policy" /></requires>
+    </civic>
+    <civic id="communism" name="Comunidad de bienes" cost="48" science="2" exclusiveGroup="ideology">
+      <description>La propiedad colectiva prioriza la investigación y los recursos compartidos.</description>
+      <requires><civic id="civic-reform" /></requires>
+    </civic>
+    <civic id="collective-education" name="Educación colectiva" cost="60" science="1" culture="1">
+      <description>El acceso común al aprendizaje difunde el conocimiento entre todas las ciudades.</description>
+      <requires><civic id="communism" /></requires>
+    </civic>
+    <civic id="shared-stewardship" name="Administración compartida" cost="72" production="1" culture="1">
+      <description>La gestión cooperativa coordina recursos y fortalece la identidad común.</description>
+      <requires><civic id="collective-education" /></requires>
+    </civic>
+    <civic id="communal-archives" name="Archivos comunales" cost="84" science="2" culture="1">
+      <description>Las bibliotecas compartidas preservan la memoria común y aceleran la investigación.</description>
+      <requires><civic id="shared-stewardship" /></requires>
+    </civic>
+    <civic id="fascism" name="Movilización nacional" cost="48" production="2" exclusiveGroup="ideology">
+      <description>La movilización centralizada prioriza la industria y la producción.</description>
+      <requires><civic id="civic-reform" /></requires>
+    </civic>
+    <civic id="national-service" name="Servicio nacional" cost="60" production="1">
+      <description>La organización de la población coordina el trabajo y la defensa de las ciudades.</description>
+      <requires><civic id="fascism" /></requires>
+    </civic>
+    <civic id="imperial-doctrine" name="Doctrina imperial" cost="72" science="1" production="1">
+      <description>Una doctrina común orienta el avance técnico y la capacidad productiva del Estado.</description>
+      <requires><civic id="national-service" /></requires>
+    </civic>
+    <civic id="state-industry" name="Industria estatal" cost="84" production="2" gold="1">
+      <description>La coordinación nacional de los recursos impulsa la producción y las arcas públicas.</description>
+      <requires><civic id="imperial-doctrine" /></requires>
+    </civic>
+    <civic id="public-schools" name="Escuelas públicas" cost="40" science="1" culture="1">
+      <description>La educación abierta mejora la investigación y difunde el aprendizaje por todo el territorio.</description>
+      <requires><civic id="civic-reform" /></requires>
+    </civic>
+    <civic id="cultural-exchange" name="Intercambio cultural" cost="52" culture="2">
+      <description>Las ideas de otras comunidades enriquecen la vida cultural de la civilización.</description>
+      <requires><civic id="public-schools" /></requires>
+    </civic>
+    <civic id="arts-patronage" name="Mecenazgo de las artes" cost="64" culture="2" gold="1">
+      <description>El apoyo a artistas y cronistas deja un legado cultural y atrae recursos.</description>
+      <requires><civic id="cultural-exchange" /></requires>
+    </civic>
+    <civic id="merchant-charters" name="Cartas mercantiles" cost="40" gold="1">
+      <description>Las rutas comerciales organizadas aumentan los ingresos de todas las ciudades.</description>
+      <requires><civic id="civic-reform" /></requires>
+    </civic>
+    <civic id="trade-federation" name="Federación comercial" cost="52" gold="2" production="1">
+      <description>Los acuerdos entre mercados aportan oro y facilitan el trabajo de las ciudades.</description>
+      <requires><civic id="merchant-charters" /></requires>
+    </civic>
+    <civic id="urban-works" name="Obras urbanas" cost="64" production="2">
+      <description>Los proyectos públicos y las infraestructuras aceleran la producción urbana.</description>
+      <requires><civic id="trade-federation" /></requires>
+    </civic>
+    <civic id="regional-councils" name="Consejos regionales" cost="40" production="1" culture="1">
+      <description>La autonomía local coordina el trabajo y fortalece las tradiciones de cada región.</description>
+      <requires><civic id="civic-reform" /></requires>
+    </civic>
+    <civic id="citizen-forums" name="Foros ciudadanos" cost="52" science="1" culture="1">
+      <description>El debate público estimula nuevas ideas y amplía la participación cultural.</description>
+      <requires><civic id="regional-councils" /></requires>
+    </civic>
+    <civic id="civic-service" name="Servicio comunitario" cost="64" production="1" gold="1">
+      <description>La colaboración entre ciudades contribuye a la producción y a las arcas comunes.</description>
+      <requires><civic id="citizen-forums" /></requires>
+    </civic>
+  </civics>
+</progression>
