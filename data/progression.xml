@@ -36,7 +36,7 @@
       <unlocks><building id="gray-harbors" /></unlocks>
     </technology>
     <technology id="navigation" name="Navegación" cost="15">
-      <description>La construcción naval permite cruzar los mares y alcanzar las islas lejanas.</description>
+      <description>Permite a las unidades terrestres cruzar casillas de agua gastando 2 puntos de movimiento por casilla y desbloquea la Galera.</description>
       <requires>
         <technology id="agriculture" />
       </requires>

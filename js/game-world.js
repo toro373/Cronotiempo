@@ -780,7 +780,7 @@ function renderMap() {
       }
       if (isVisible && camp) {
         const marker = document.createElement("span");
-        marker.className = "barbarian-camp-marker";
+        marker.className = `barbarian-camp-marker camp-marker-${camp.faction}`;
         const campName = camp.faction === "elves" ? "Campamento élfico" :
           camp.faction === "dwarves" ? "Campamento enano" :
             camp.faction === "dragons" ? "Guarida del Dragón ancestral · peligro extremo" : "Campamento bárbaro";
@@ -1046,7 +1046,7 @@ function renderSelection() {
           <span class="unit-health-fill ${unit.health / unit.maxHealth <= .3 ? "health-critical" : unit.health / unit.maxHealth <= .65 ? "health-wounded" : ""}" style="width:${Math.max(0, Math.min(100, (unit.health / unit.maxHealth) * 100))}%"></span>
         </span>
       </div>
-      <div class="unit-meta"><span>⚑ Fuerza ${getUnitStrength(type, getUnitFaction(unit))}</span><span>❤ ${unit.health}/${unit.maxHealth}</span><span>↗ Movimiento ${unit.movesLeft}/${type.movement}</span>${type.range > 1 ? `<span>◎ Alcance ${type.range}</span>` : ""}${type.canSail || game.researched.includes("navigation") ? "<span>⛵ Navega · 2 movimientos/casilla</span>" : "<span>⚓ Investiga Navegación para cruzar el mar</span>"}</div>
+      <div class="unit-meta"><span>⚑ Fuerza ${getUnitStrength(type, getUnitFaction(unit))}</span><span>❤ ${unit.health}/${unit.maxHealth}</span><span>↗ Movimiento ${unit.movesLeft}/${type.movement}</span>${type.range > 1 ? `<span>◎ Alcance ${type.range}</span>` : ""}</div>
       ${type.canBuild ? `<p class="unit-stance-status">Construcciones restantes: ${unit.buildCharges}/3</p>` : ""}
       ${type.canTrade ? renderMerchantRouteSummary(unit) : ""}
       ${getUnitStrength(type, getUnitFaction(unit)) > 0

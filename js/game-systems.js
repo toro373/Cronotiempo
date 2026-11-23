@@ -55,12 +55,12 @@ function renderStats() {
   scienceButton.title = hasFoundedPlayerCity() ? "" : "Funda tu primera ciudad para desbloquear la ciencia.";
   cultureButton.title = hasFoundedPlayerCity() ? "" : "Funda tu primera ciudad para desbloquear la cultura.";
   document.querySelector("#science-status").textContent = !hasFoundedPlayerCity()
-    ? "Funda tu primera ciudad"
+    ? "Funda una ciudad"
     : activeTechnology
     ? `${activeTechnology.name} · +${rates.science}/turno${game.scienceReserve ? ` · reserva ${game.scienceReserve}` : ""}`
     : `+${rates.science}/turno · sin asignar${game.scienceReserve ? ` · reserva ${game.scienceReserve}` : ""}`;
   document.querySelector("#culture-status").textContent = !hasFoundedPlayerCity()
-    ? "Funda tu primera ciudad"
+    ? "Funda una ciudad"
     : activeCivic
     ? `${activeCivic.name} · +${rates.culture}/turno`
     : `+${rates.culture}/turno · sin asignar`;
@@ -481,6 +481,11 @@ function openDiplomacyDialog() {
   document.querySelector("#diplomacy-dialog").showModal();
 }
 
+function openVictoryObjectivesDialog() {
+  renderVictoryObjectives();
+  document.querySelector("#victory-objectives-dialog").showModal();
+}
+
 function renderDiplomacyDialog() {
   const content = document.querySelector("#diplomacy-content");
   content.innerHTML = game.opponents.map((opponent) => {
@@ -629,10 +634,7 @@ function confirmWarAttackOrder() {
 
   const opponent = game.opponents.find((item) => item.civilization.id === order.civilizationId);
   if (!opponent) return;
-  if (!opponent.met) {
-    opponent.met = true;
-    addEvent(`Has establecido contacto con ${opponent.civilization.name}.`);
-  }
+  announceCivilizationContact(opponent);
   declareWar(order.civilizationId);
   const attacker = game.units.find((unit) => unit.id === order.attackerId);
   const target = order.targetKind === "unit"
@@ -727,9 +729,8 @@ function renderProgressDialog(kind) {
         return `<span class="${met ? "requirement-met" : ""}">${met ? "✓" : "○"} ${escapeHtml(requirement?.name ?? id)}</span>`;
       }).join("")}</p>`
       : `<p class="tree-requirements">Sin requisitos previos</p>`;
-    const unlocks = isTechnology
-      ? formatTechnologyUnlocks(item)
-      : civicEffects(item);
+    const unlocks = isTechnology ? formatTechnologyUnlocks(item) : [];
+    const effects = isTechnology ? "" : civicEffects(item);
     let actionText = "Iniciar";
     let disabled = !hasFoundedPlayerCity() || isComplete || isBlocked || !requirementsMet;
     if (isComplete) actionText = isTechnology ? "Completada" : "Adoptada";
@@ -745,7 +746,10 @@ function renderProgressDialog(kind) {
       <div class="tree-card-top"><span class="tree-node-number">${isComplete ? "✓" : escapeHtml(String(cost))}</span><div><h3>${escapeHtml(item.name)}</h3><span class="tree-cost">${cost} ${noun} · ${isComplete ? "completada" : `~${turnsRemaining} turnos`}</span></div></div>
       <p class="tree-description">${escapeHtml(item.description)}</p>
       ${prerequisites}
-      ${unlocks ? `<p class="tree-unlocks">${escapeHtml(unlocks)}</p>` : ""}
+      ${unlocks.length ? `<div class="tree-unlocks"><strong class="tree-unlocks-label">Desbloquea</strong><ul class="tree-unlock-list">${unlocks.map((unlock) =>
+        `<li class="tree-unlock-item"><span class="tree-unlock-kind">${escapeHtml(unlock.kind)}</span><strong class="tree-unlock-name">${escapeHtml(unlock.name)}</strong><span class="tree-unlock-description">${escapeHtml(unlock.description)}</span><small>${escapeHtml(unlock.details)}</small></li>`
+      ).join("")}</ul></div>` : ""}
+      ${effects ? `<p class="tree-unlocks">${escapeHtml(effects)}</p>` : ""}
       ${isCurrent ? `<div class="tree-progress"><span style="width:${Math.min(100, Math.round((progress / cost) * 100))}%"></span></div><small class="tree-progress-label">${progress}/${cost} ${noun}</small>` : ""}
       ${!isTechnology && item.exclusiveGroup ? `<small class="exclusive-note">${isBlocked ? "Bloqueada por otra ideología." : "Elección excluyente: cerrará la ruta ideológica rival."}</small>` : ""}
       <button class="tree-action" type="button" data-progress-kind="${kind}" data-progress-id="${escapeHtml(item.id)}" ${disabled ? "disabled" : ""}>${actionText}</button>
@@ -813,15 +817,35 @@ function formatTechnologyUnlocks(technology) {
   return technology.unlocks.map((unlock) => {
     if (unlock.type === "unit") {
       const unit = game.unitTypes.get(unlock.id);
-      if (!unit || (unit.faction !== game.civilization.id && unit.faction !== "generic")) return "";
-      return `Unidad: ${unit.name} · Fuerza ${getUnitStrength(unit, game.civilization.id)} · Movimiento ${unit.movement}${unit.range > 1 ? ` · Alcance ${unit.range}` : ""}`;
+      if (!unit || (unit.faction !== game.civilization.id && unit.faction !== "generic")) return null;
+      const details = [];
+      const strength = getUnitStrength(unit, game.civilization.id);
+      if (strength > 0) details.push(`Fuerza ${strength}`);
+      details.push(`Movimiento ${unit.movement}`);
+      if (unit.range > 1) details.push(`Alcance ${unit.range}`);
+      const materialRequirements = formatMaterialRequirements(unit);
+      return {
+        kind: "Unidad",
+        name: unit.name,
+        description: unit.description,
+        details: [
+          `Fabricación: ${getPlayerUnitOption(unit).cost} producción`,
+          materialRequirements ? `Materiales: ${materialRequirements}` : "",
+          ...details
+        ].filter(Boolean).join(" · ")
+      };
     }
     const building = game.buildings.find((item) => item.id === unlock.id);
-    if (!building) return "";
-    return building.placement === "territory"
-      ? `Construcción territorial: ${building.name} · forma ${game.unitTypes.get(building.unitId)?.name ?? "una unidad"} cada ${building.unitInterval} turnos`
-      : `Mejora: ${building.name} · ${building.cost} producción`;
-  }).filter(Boolean).join(" · ");
+    if (!building) return null;
+    return {
+      kind: building.placement === "territory" ? "Edificio territorial" : "Edificio",
+      name: building.name,
+      description: building.description,
+      details: building.placement === "territory"
+        ? "Construcción: requiere un constructor y no consume producción de ciudad"
+        : `Coste de construcción: ${building.cost} producción`
+    };
+  }).filter(Boolean);
 }
 
 function selectProgress(kind, id) {
@@ -854,6 +878,13 @@ function selectProgress(kind, id) {
 
 function createExplorationMap() {
   return Array.from({ length: HEIGHT }, () => Array(WIDTH).fill(false));
+}
+
+function announceCivilizationContact(opponent) {
+  if (opponent.met) return;
+  opponent.met = true;
+  addEvent(`Has establecido contacto con ${opponent.civilization.name}.`);
+  showMessage(`Nuevo contacto: ${opponent.civilization.name}.`);
 }
 
 function updateVisibility() {
@@ -894,10 +925,7 @@ function updateVisibility() {
     ) || game.cities.some((city) =>
       city.ownerId === opponent.civilization.id && visible.has(`${city.x},${city.y}`)
     );
-    if (hasVisiblePresence) {
-      opponent.met = true;
-      addEvent(`Has establecido contacto con ${opponent.civilization.name}.`);
-    }
+    if (hasVisiblePresence) announceCivilizationContact(opponent);
   }
 }
 
@@ -982,15 +1010,15 @@ function addEvent(message) {
   time.textContent = `TURNO ${game.turn}`;
   item.append(time);
   log.prepend(item);
-  while (log.children.length > 5) log.lastElementChild.remove();
+  while (log.children.length > 20) log.lastElementChild.remove();
 }
 
-function showMessage(message) {
+function showMessage(message, duration = 2600) {
   const toast = document.querySelector("#game-message");
   toast.textContent = message;
   toast.classList.add("visible");
   clearTimeout(game.messageTimer);
-  game.messageTimer = setTimeout(() => toast.classList.remove("visible"), 2600);
+  game.messageTimer = setTimeout(() => toast.classList.remove("visible"), duration);
 }
 
 function initializeGameAudio() {
@@ -1165,6 +1193,8 @@ document.querySelector("#toggle-progression-branches").addEventListener("click",
 document.querySelector("#close-progression").addEventListener("click", () => document.querySelector("#progression-dialog").close());
 document.querySelector("#open-diplomacy").addEventListener("click", openDiplomacyDialog);
 document.querySelector("#close-diplomacy").addEventListener("click", () => document.querySelector("#diplomacy-dialog").close());
+document.querySelector("#open-victory-objectives").addEventListener("click", openVictoryObjectivesDialog);
+document.querySelector("#close-victory-objectives").addEventListener("click", () => document.querySelector("#victory-objectives-dialog").close());
 document.querySelector("#confirm-war-attack").addEventListener("click", confirmWarAttackOrder);
 document.querySelector("#cancel-war-attack").addEventListener("click", () => {
   pendingWarOrder = null;

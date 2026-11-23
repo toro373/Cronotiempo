@@ -106,12 +106,7 @@
           <span class="eyebrow" id="civilization-passive-title">PASIVA DE CIVILIZACIÓN</span>
           <p id="civilization-passive">Cargando habilidad de la civilización…</p>
         </section>
-        <section class="victory-objectives" aria-labelledby="victory-objectives-title">
-          <span class="eyebrow" id="victory-objectives-title">OBJETIVOS DE VICTORIA</span>
-          <div id="victory-objectives"></div>
-        </section>
         <div id="diplomacy-summary" class="diplomacy-summary"></div>
-        <button id="open-diplomacy" class="secondary-button diplomacy-open" type="button">Diplomacia <span>→</span></button>
       </section>
 
       <section class="world-section" aria-label="Mapa del mundo">
@@ -121,22 +116,23 @@
             <h2 id="world-map-name">Tierras del amanecer</h2>
           </div>
           <div class="progression-buttons">
-            <button id="open-science" class="progression-button science-button" type="button"><span>⚗</span><span><small>CIENCIA</small><strong id="science-status">Sin investigación</strong></span></button>
-            <button id="open-culture" class="progression-button culture-button" type="button"><span>✧</span><span><small>CULTURA</small><strong id="culture-status">Sin doctrina</strong></span></button>
+            <button id="open-science" class="progression-button science-button" type="button"><span aria-hidden="true">⚗</span><span><small>CIENCIA</small><strong id="science-status">Sin investigación</strong></span><span class="progression-lock" aria-hidden="true">🔒</span></button>
+            <button id="open-culture" class="progression-button culture-button" type="button"><span aria-hidden="true">✧</span><span><small>CULTURA</small><strong id="culture-status">Sin doctrina</strong></span><span class="progression-lock" aria-hidden="true">🔒</span></button>
+            <button id="open-diplomacy" class="progression-button diplomacy-button" type="button"><span aria-hidden="true">⚖</span><span><small>DIPLOMACIA</small><strong>Relaciones</strong></span></button>
+            <button id="open-victory-objectives" class="progression-button victory-objectives-button" type="button"><span aria-hidden="true">★</span><span><small>VICTORIA</small><strong>Ver objetivos</strong></span></button>
           </div>
           <div class="legend" aria-label="Leyenda del mapa">
-            <span><i class="legend-dot grass"></i>Pradera</span>
-            <span><i class="legend-dot plains"></i>Llanura</span>
-            <span><i class="legend-dot forest"></i>Bosque</span>
-            <span><i class="legend-dot hills"></i>Colinas</span>
-            <span><i class="legend-dot water"></i>Agua</span>
-            <span><i class="legend-dot mountain"></i>Montaña</span>
-            <span><i class="legend-dot desert"></i>Desierto</span>
-            <span><i class="legend-dot abyss"></i>Abismo</span>
-            <span><i class="legend-unit"><b></b></i>Unidad</span>
-            <span><i class="legend-territory player"></i>Tu influencia</span>
-            <span><i class="legend-territory foreign"></i>Influencia rival</span>
-            <span><i class="legend-territory purchase"></i>Casilla comprable</span>
+            <span class="legend-item" title="Pradera: produce 2 alimentos y 1 producción; cuesta 1 movimiento. Un constructor puede hacer un Campo (+1 grano) en una casilla libre de tu territorio."><i class="legend-tile grass" aria-hidden="true"><svg class="legend-terrain-art" viewBox="0 0 24 24"><use href="assets/pixel-art.svg#terrain-grass"></use></svg></i><span>Pradera</span></span>
+            <span class="legend-item" title="Llanura: produce 1 alimento y 2 de producción; cuesta 1 movimiento. Un constructor puede hacer un Campo (+1 grano) en una casilla libre de tu territorio."><i class="legend-tile plains" aria-hidden="true"><svg class="legend-terrain-art" viewBox="0 0 24 24"><use href="assets/pixel-art.svg#terrain-plains"></use></svg></i><span>Llanura</span></span>
+            <span class="legend-item" title="Bosque: produce 1 alimento y 2 de producción; cuesta 2 movimientos. No admite Campo ni Cantera. En casillas libres del territorio de una ciudad puedes construir edificios territoriales desbloqueados."><i class="legend-tile forest" aria-hidden="true"><svg class="legend-terrain-art" viewBox="0 0 24 24"><use href="assets/pixel-art.svg#terrain-forest"></use></svg></i><span>Bosque</span></span>
+            <span class="legend-item" title="Colinas: producen 1 alimento y 2 de producción; cuestan 2 movimientos. Un constructor puede hacer una Cantera (+1 piedra) en una casilla libre de tu territorio."><i class="legend-tile hills" aria-hidden="true"><svg class="legend-terrain-art" viewBox="0 0 24 24"><use href="assets/pixel-art.svg#terrain-hills"></use></svg></i><span>Colinas</span></span>
+            <span class="legend-item" title="Agua: produce 1 alimento y no da producción. Las unidades navales pueden cruzarla; con Navegación, las unidades terrestres también pueden cruzarla (2 movimientos por casilla). La Galera se construye en una ciudad con acceso al agua."><i class="legend-tile water" aria-hidden="true"><svg class="legend-terrain-art" viewBox="0 0 24 24"><use href="assets/pixel-art.svg#terrain-water"></use></svg></i><span>Agua</span></span>
+            <span class="legend-item" title="Montaña: produce 1 de producción y no da alimentos. Es infranqueable y no admite mejoras."><i class="legend-tile mountain" aria-hidden="true"><svg class="legend-terrain-art" viewBox="0 0 24 24"><use href="assets/pixel-art.svg#terrain-mountain"></use></svg></i><span>Montaña</span></span>
+            <span class="legend-item" title="Desierto: produce 1 de producción y no da alimentos; cuesta 1 movimiento. No admite Campo ni Cantera."><i class="legend-tile desert" aria-hidden="true"><svg class="legend-terrain-art" viewBox="0 0 24 24"><use href="assets/pixel-art.svg#terrain-desert"></use></svg></i><span>Desierto</span></span>
+            <span class="legend-item" title="Abismo: produce 4 alimentos y 3 de producción; cuesta 2 movimientos. Un constructor puede hacer un Campo (+1 grano) en una casilla libre de tu territorio."><i class="legend-tile abyss" aria-hidden="true"><svg class="legend-terrain-art" viewBox="0 0 24 24"><use href="assets/pixel-art.svg#terrain-abyss"></use></svg></i><span>Abismo</span></span>
+            <span class="legend-item" title="Tu influencia: borde amarillo. Un constructor puede levantar edificios territoriales desbloqueados en casillas libres dentro del territorio de una ciudad propia."><i class="legend-tile grass player" aria-hidden="true"><svg class="legend-terrain-art" viewBox="0 0 24 24"><use href="assets/pixel-art.svg#terrain-grass"></use></svg></i><span>Tu influencia</span></span>
+            <span class="legend-item" title="Influencia rival: borde rojo discontinuo. No puedes construir aquí mientras pertenezca a otra civilización."><i class="legend-tile grass foreign" aria-hidden="true"><svg class="legend-terrain-art" viewBox="0 0 24 24"><use href="assets/pixel-art.svg#terrain-grass"></use></svg></i><span>Influencia rival</span></span>
+            <span class="legend-item" title="Casilla comprable: borde amarillo discontinuo. Compra una casilla libre explorada junto a tu ciudad por 10 de oro para ampliar su territorio."><i class="legend-tile grass purchase" aria-hidden="true"><svg class="legend-terrain-art" viewBox="0 0 24 24"><use href="assets/pixel-art.svg#terrain-grass"></use></svg></i><span>Casilla comprable</span></span>
           </div>
         </div>
         <div class="map-frame">
@@ -151,7 +147,10 @@
           <div id="map-viewport" class="map-viewport" role="region" tabindex="0" aria-label="Mapa desplazable. Arrastra con el botón izquierdo para explorar el mundo.">
             <div id="game-map" class="game-map" role="grid" aria-label="Mapa táctico"></div>
           </div>
-          <div class="map-caption"><span class="live-dot"></span> <span id="map-caption">Explora y funda tu primer asentamiento.</span></div>
+          <div class="map-caption">
+            <span class="map-caption-copy"><span class="live-dot" aria-hidden="true"></span><span id="map-caption">Explora y funda tu primer asentamiento.</span></span>
+            <button id="end-turn" class="end-turn-button end-turn-bottom" type="button" disabled>Finalizar turno <span aria-hidden="true">→</span></button>
+          </div>
         </div>
       </section>
 
@@ -180,7 +179,6 @@
           </summary>
           <ol id="event-log" class="event-log" aria-live="polite"></ol>
         </details>
-        <button id="end-turn" class="end-turn-button end-turn-bottom" type="button" disabled>Finalizar turno <span aria-hidden="true">→</span></button>
         <footer class="panel-footer">Una nueva era comienza · <span id="footer-civilization">Imperio de la Humanidad</span></footer>
       </aside>
     </main>
@@ -204,6 +202,15 @@
     </div>
     <p class="progression-summary">Explora para establecer contacto. Puedes declarar la guerra o proponer la paz; el comercio y las delegaciones se suspenden durante el conflicto.</p>
     <div id="diplomacy-content" class="diplomacy-content"></div>
+  </dialog>
+  <dialog id="victory-objectives-dialog" class="progression-dialog victory-objectives-dialog" aria-labelledby="victory-objectives-title">
+    <div class="progression-dialog-header">
+      <div><span class="eyebrow">CONDICIONES DE VICTORIA</span><h2 id="victory-objectives-title">Objetivos de victoria</h2></div>
+      <button id="close-victory-objectives" class="dialog-close" type="button" aria-label="Cerrar">×</button>
+    </div>
+    <section class="victory-objectives">
+      <div id="victory-objectives"></div>
+    </section>
   </dialog>
   <dialog id="war-confirm-dialog" class="exit-dialog war-confirm-dialog" aria-labelledby="war-confirm-title">
     <span class="eyebrow">ORDEN MILITAR</span>

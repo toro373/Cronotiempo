@@ -11,6 +11,7 @@ const CITY_MAX_INFLUENCE_RADIUS = 4;
 const CITY_MAX_TERRITORY_TILES = (CITY_MAX_INFLUENCE_RADIUS * 2 + 1) ** 2;
 const CITY_TILE_PURCHASE_COST = 10;
 const UNIT_PURCHASE_PRICE_MULTIPLIER = 0.75;
+let incomingAttackNotices = [];
 
 function renderCityProjects(city) {
   if (game.victory) {
@@ -676,8 +677,10 @@ function buildTerritoryBuilding(unit, buildingId) {
   unit.buildCharges -= 1;
   addEvent(`${building.name} comienza a construirse en el territorio de ${city.name}.`);
   if (unit.buildCharges === 0) {
+    const type = game.unitTypes.get(unit.typeId);
     game.units = game.units.filter((item) => item.id !== unit.id);
     game.selectedUnitId = null;
+    addEvent(`${type.name} ha agotado sus tres construcciones y se ha retirado.`);
   }
   render();
   saveGame();
@@ -775,6 +778,23 @@ function performAttack(attackerId, targetId, targetKind) {
   saveGame();
 }
 
+function recordIncomingAttackNotice(message) {
+  if (!game.turnProcessing || game.activeTurnFactionId === game.civilization.id) return;
+  incomingAttackNotices.push(message);
+}
+
+function showIncomingAttackReport() {
+  if (!incomingAttackNotices.length) return;
+  const notices = incomingAttackNotices;
+  incomingAttackNotices = [];
+  const visibleNotices = notices.slice(0, 3).join(" ");
+  const additionalNotice = notices.length > 3 ? ` Y ${notices.length - 3} ataques más.` : "";
+  const heading = notices.length === 1
+    ? "Ataque durante el turno de otras facciones: "
+    : `${notices.length} ataques durante los turnos de otras facciones: `;
+  showMessage(`${heading}${visibleNotices}${additionalNotice}`, 7000);
+}
+
 function moveUnitTowardCombatTarget(attacker, target, targetKind) {
   const attackerType = game.unitTypes.get(attacker.typeId);
   const attackRange = Math.max(1, attackerType.range ?? 1);
@@ -816,6 +836,8 @@ function moveUnitTowardCombatTarget(attacker, target, targetKind) {
 function resolveUnitCombat(attacker, defender) {
   const attackerType = game.unitTypes.get(attacker.typeId);
   const defenderType = game.unitTypes.get(defender.typeId);
+  const defenderIsPlayer = getUnitFaction(defender) === game.civilization.id;
+  const attackerFactionName = getTurnFactionName(getUnitFaction(attacker));
   recordUnitCombat(attacker, attackerType);
   recordUnitCombat(defender, defenderType);
   const attackerStrength = getUnitStrength(attackerType, getUnitFaction(attacker));
@@ -824,7 +846,17 @@ function resolveUnitCombat(attacker, defender) {
   const damage = applyStanceDefense(defender, rawDamage);
   defender.health = Math.max(0, defender.health - damage);
   showCombatDamageEffect(defender, damage);
-  addEvent(`${attackerType.name} inflige ${damage} de daño a ${defenderType.name}.`);
+  if (defenderIsPlayer) {
+    const notice = defender.health <= 0
+      ? `Tu unidad ${defenderType.name} ha sido destruida por ${attackerFactionName}.`
+      : `${defenderType.name} recibió ${damage} de daño de ${attackerFactionName}; le quedan ${defender.health}/${defender.maxHealth} de salud.`;
+    if (defender.health > 0) {
+      addEvent(`¡${attackerFactionName} ataca a tu ${defenderType.name}: ${damage} de daño; ${defender.health}/${defender.maxHealth} de salud.`);
+    }
+    recordIncomingAttackNotice(notice);
+  } else {
+    addEvent(`${attackerType.name} inflige ${damage} de daño a ${defenderType.name}.`);
+  }
   if (defender.health <= 0) {
     removeDefeatedUnit(defender, defenderType, getUnitFaction(attacker));
     return;
@@ -835,7 +867,9 @@ function resolveUnitCombat(attacker, defender) {
     calculateUnitDamage(defenderStrength, attackerStrength, defender.upgrades?.attack ?? 0));
   attacker.health = Math.max(0, attacker.health - counterDamage);
   showCombatDamageEffect(attacker, counterDamage);
-  addEvent(`${defenderType.name} contraataca e inflige ${counterDamage} de daño.`);
+  addEvent(getUnitFaction(attacker) === game.civilization.id
+    ? `${defenderType.name} contraataca a tu ${attackerType.name} e inflige ${counterDamage} de daño.`
+    : `${defenderType.name} contraataca e inflige ${counterDamage} de daño.`);
   if (attacker.health <= 0) {
     removeDefeatedUnit(attacker, attackerType, getUnitFaction(defender));
   }
@@ -898,7 +932,9 @@ function chooseUnitUpgrade(unitId, upgradeId) {
 
 function removeDefeatedUnit(unit, type, defeatedByFaction) {
   game.units = game.units.filter((item) => item.id !== unit.id);
-  addEvent(`${type.name} ha sido derrotado.`);
+  addEvent(getUnitFaction(unit) === game.civilization.id
+    ? `Tu unidad ${type.name} ha sido destruida por ${getTurnFactionName(defeatedByFaction)}.`
+    : `${type.name} ha sido derrotado.`);
   if (getUnitFaction(unit) === "beasts") {
     addEvent("La criatura del Abismo se disuelve en una nube de ceniza oscura.");
     return;
@@ -957,6 +993,8 @@ function foundPaganSunCityAtVillage(camp) {
 
 function resolveCityCombat(attacker, city) {
   const attackerType = game.unitTypes.get(attacker.typeId);
+  const cityWasPlayerOwned = city.ownerId === game.civilization.id;
+  const attackerFactionName = getTurnFactionName(getUnitFaction(attacker));
   const cityBuildings = (city.buildings ?? [])
     .map((id) => game.buildings.find((building) => building.id === id))
     .filter(Boolean);
@@ -967,7 +1005,13 @@ function resolveCityCombat(attacker, city) {
     (1 - damageReduction))));
   city.health = Math.max(0, city.health - damage);
   showCombatDamageEffect(city, damage);
-  addEvent(`${attackerType.name} asedia ${city.name} e inflige ${damage} de daño.`);
+  if (city.health > 0) {
+    const notice = `${city.name} recibió ${damage} de daño de ${attackerFactionName}; le quedan ${city.health}/${city.maxHealth} de salud.`;
+    addEvent(cityWasPlayerOwned
+      ? `¡${attackerFactionName} ataca tu ciudad ${city.name}: ${damage} de daño; ${city.health}/${city.maxHealth} de salud.`
+      : `${attackerType.name} asedia ${city.name} e inflige ${damage} de daño.`);
+    if (cityWasPlayerOwned) recordIncomingAttackNotice(notice);
+  }
   if (city.health > 0) {
     const cityDefense = cityBuildings.reduce((total, building) => total + (building.cityDefense ?? 0), 0);
     const counterDamage = applyStanceDefense(attacker, 6 + cityDefense);
@@ -976,7 +1020,9 @@ function resolveCityCombat(attacker, city) {
     addEvent(`${city.name} se defiende e inflige ${counterDamage} de daño.`);
     if (attacker.health <= 0) {
       game.units = game.units.filter((unit) => unit.id !== attacker.id);
-      addEvent(`${attackerType.name} ha sido derrotado.`);
+      addEvent(getUnitFaction(attacker) === game.civilization.id
+        ? `Tu unidad ${attackerType.name} ha sido destruida por la defensa de ${city.name}.`
+        : `${attackerFactionName} ha perdido su unidad ${attackerType.name} ante la defensa de ${city.name}.`);
     }
     return;
   }
@@ -989,7 +1035,11 @@ function resolveCityCombat(attacker, city) {
       delete tile.territoryOwnerId;
       delete tile.structure;
     }
-    addEvent(`Una Bestia del Abismo arrasa ${city.name}; la ciudad queda destruida.`);
+    const notice = `Tu ciudad ${city.name} ha sido arrasada por una Bestia del Abismo.`;
+    addEvent(cityWasPlayerOwned
+      ? `¡${notice}`
+      : `Una Bestia del Abismo arrasa ${city.name}; la ciudad queda destruida.`);
+    if (cityWasPlayerOwned) recordIncomingAttackNotice(notice);
     return;
   }
 
@@ -1003,7 +1053,11 @@ function resolveCityCombat(attacker, city) {
     }
   }
   const owner = game.civilizations.find((civilization) => civilization.id === city.ownerId);
-  addEvent(`${owner?.name ?? "El ejército atacante"} conquista ${city.name}.`);
+  const captureNotice = `${owner?.name ?? attackerFactionName} ha conquistado tu ciudad ${city.name}.`;
+  addEvent(cityWasPlayerOwned
+    ? `¡${captureNotice}`
+    : `${owner?.name ?? "El ejército atacante"} conquista ${city.name}.`);
+  if (cityWasPlayerOwned) recordIncomingAttackNotice(captureNotice);
   if (city.isCapital && city.ownerId === game.civilization.id) {
     recordMilestone(`Conquistaste la capital ${city.name}.`);
   }
@@ -1084,6 +1138,7 @@ function foundCity() {
   game.selectedUnitId = null;
   game.selectedTile = { x: settler.x, y: settler.y };
   addEvent(`${name} ha sido fundada. Comienza una nueva era.`);
+  addEvent(`${game.unitTypes.get(settler.typeId).name} se ha convertido en los cimientos de ${name}.`);
   recordMilestone(`Fundaste la ciudad ${name}.`);
   showMessage(`${name} ya forma parte del Imperio.`);
   checkVictoryConditions();
@@ -1598,6 +1653,7 @@ async function endTurn() {
   if (game.victory || game.turnProcessing ||
       game.activeTurnFactionId !== game.civilization?.id) return;
   game.turnProcessing = true;
+  incomingAttackNotices = [];
   const gameScreen = document.querySelector("#game-screen");
   const transition = document.querySelector("#turn-transition");
   gameScreen.inert = true;
@@ -1695,6 +1751,7 @@ async function endTurn() {
     transition.hidden = true;
     gameScreen.inert = false;
     render();
+    showIncomingAttackReport();
   }
 }
 
